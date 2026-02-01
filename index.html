@@ -6,194 +6,268 @@
     <title>IT Troubleshooting Hub</title>
     <style>
         :root {
-            --sidebar-bg: #1e293b;
-            --main-bg: #f1f5f9;
-            --accent: #4f46e5;
-            --white: #ffffff;
-            --text-dark: #0f172a;
+            --primary: #4f46e5;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
         }
-
-        * { box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             margin: 0;
-            display: flex;
-            background-color: var(--main-bg);
-            color: var(--text-dark);
-            min-height: 100vh;
+            padding: 0;
+            line-height: 1.6;
         }
 
-        /* Side Navigation */
-        .sidebar {
-            width: 250px;
-            background-color: var(--sidebar-bg);
+        /* Top Navigation - Removes blocking layers */
+        header {
+            background: #1e293b;
+            padding: 1rem;
             color: white;
-            padding: 20px;
-            flex-shrink: 0;
-        }
-
-        .sidebar h2 {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            color: #818cf8;
             text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .nav-link {
-            display: block;
-            padding: 12px 15px;
-            color: #cbd5e1;
-            text-decoration: none;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: 0.2s;
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .nav-btn {
+            background: #334155;
+            color: white;
             border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
         }
 
-        .nav-link:hover { background-color: #334155; color: white; }
-        .nav-link.active { background-color: var(--accent); color: white; }
+        .nav-btn:hover { background: #475569; }
+        .nav-btn.active { background: var(--primary); }
 
-        /* Content Area */
-        .content {
-            flex-grow: 1;
-            padding: 40px;
-            overflow-y: auto;
+        /* Main Content */
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
         }
 
         .page { display: none; }
         .page.active { display: block; }
 
-        /* Grid Layout */
+        /* Knowledge Grid */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
-            margin-top: 20px;
+            margin: 20px 0;
         }
 
         .card {
-            background: var(--white);
-            padding: 20px;
+            background: var(--card);
+            padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
             cursor: pointer;
-            transition: transform 0.2s, border 0.2s;
             border: 2px solid transparent;
+            transition: 0.2s;
         }
 
         .card:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent);
+            border-color: var(--primary);
+            transform: translateY(-2px);
         }
 
-        /* Detail Display */
-        .info-box {
-            margin-top: 30px;
+        /* Detailed Paragraph Box */
+        .info-display {
+            background: #eef2ff;
             padding: 30px;
-            background: var(--white);
             border-radius: 12px;
-            border-left: 8px solid var(--accent);
-            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-            display: none;
+            border-left: 6px solid var(--primary);
+            margin-top: 30px;
+            display: none; /* Shown via JS */
         }
 
-        .info-box h2 { margin-top: 0; color: var(--accent); }
-        .info-box p { line-height: 1.7; font-size: 1.1rem; color: #334155; }
-
-        /* Log Form */
+        /* Form Styling */
         .log-form {
-            background: var(--white);
-            padding: 25px;
+            background: var(--card);
+            padding: 30px;
             border-radius: 12px;
-            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
 
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
         input, textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #cbd5e1;
-            border-radius: 6px;
+            border-radius: 8px;
+            font-size: 1rem;
         }
 
-        .btn-save {
-            background: var(--accent);
+        .btn-add {
+            background: var(--primary);
             color: white;
-            padding: 12px 20px;
             border: none;
-            border-radius: 6px;
+            padding: 12px 24px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
+            width: 100%;
         }
 
-        .log-item {
-            background: #e0e7ff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 4px solid var(--accent);
+        .log-entry {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #10b981;
         }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h2>IT PROJECT</h2>
-        <button class="nav-link active" onclick="openTab(event, 'log-tab')">Diagnostic Log</button>
-        <button class="nav-link" onclick="openTab(event, 'hw-tab')">Hardware Info</button>
-        <button class="nav-link" onclick="openTab(event, 'sw-tab')">Software Info</button>
+<header>
+    <h2 style="margin:0;">💻 IT PROJECT HUB</h2>
+    <div class="nav-container">
+        <button class="nav-btn active" onclick="tab('log-page')">Diagnostic Log</button>
+        <button class="nav-btn" onclick="tab('hw-page')">Hardware</button>
+        <button class="nav-btn" onclick="tab('sw-page')">Software</button>
+    </div>
+</header>
+
+<div class="container">
+    
+    <div id="log-page" class="page active">
+        <h2>System Repair Log</h2>
+        <div class="log-form">
+            <div class="form-group">
+                <label>Device Name</label>
+                <input type="text" id="dev" placeholder="Example: Dell Laptop">
+            </div>
+            <div class="form-group">
+                <label>Issue</label>
+                <input type="text" id="iss" placeholder="What is the problem?">
+            </div>
+            <div class="form-group">
+                <label>Resolution Details</label>
+                <textarea id="sol" rows="3"></textarea>
+            </div>
+            <button class="btn-add" onclick="saveData()">Add to Session History</button>
+        </div>
+        <div id="history"></div>
     </div>
 
-    <div class="content">
-        <div id="log-tab" class="page active">
-            <h1>Diagnostic & Repair Log</h1>
-            <div class="log-form">
-                <div class="input-group">
-                    <label>Device</label>
-                    <input type="text" id="devName" placeholder="e.g. PC-01">
-                </div>
-                <div class="input-group">
-                    <label>Issue</label>
-                    <input type="text" id="devIssue" placeholder="What happened?">
-                </div>
-                <div class="input-group">
-                    <label>Resolution</label>
-                    <textarea id="devRes" rows="3"></textarea>
-                </div>
-                <button class="btn-save" onclick="saveLog()">Save to Session</button>
+    <div id="hw-page" class="page">
+        <h2>Hardware Knowledge Base</h2>
+        <p>Click any item below to read the detailed technical explanation.</p>
+        <div class="grid">
+            <div class="card" onclick="showInfo('RAM')">
+                <h3>🧠 RAM</h3>
+                <p>Click to see function and importance.</p>
             </div>
-            <div id="logHistory"></div>
-        </div>
-
-        <div id="hw-tab" class="page">
-            <h1>Hardware Library</h1>
-            <p>Click a component to see the full explanation.</p>
-            <div class="grid">
-                <div class="card" onclick="viewInfo('RAM')"><h3>RAM</h3><p>Memory Management</p></div>
-                <div class="card" onclick="viewInfo('CPU')"><h3>CPU</h3><p>Central Processing</p></div>
-                <div class="card" onclick="viewInfo('Motherboard')"><h3>Motherboard</h3><p>Main Circuitry</p></div>
+            <div class="card" onclick="showInfo('CPU')">
+                <h3>⚡ CPU</h3>
+                <p>Click to see how the processor works.</p>
             </div>
-        </div>
-
-        <div id="sw-tab" class="page">
-            <h1>Software Library</h1>
-            <div class="grid">
-                <div class="card" onclick="viewInfo('OS')"><h3>Operating System</h3><p>System Software</p></div>
-                <div class="card" onclick="viewInfo('Firmware')"><h3>Firmware</h3><p>Hardware Logic</p></div>
+            <div class="card" onclick="showInfo('Motherboard')">
+                <h3>📟 Motherboard</h3>
+                <p>Click to see the system backbone.</p>
             </div>
-        </div>
-
-        <div id="infoDisplay" class="info-box">
-            <h2 id="infoTitle"></h2>
-            <p id="infoText"></p>
         </div>
     </div>
 
-    <script>
+    <div id="sw-page" class="page">
+        <h2>Software Knowledge Base</h2>
+        <div class="grid">
+            <div class="card" onclick="showInfo('OS')">
+                <h3>🖥️ Operating System</h3>
+                <p>Learn about Windows/Linux/macOS roles.</p>
+            </div>
+            <div class="card" onclick="showInfo('BIOS')">
+                <h3>⚙️ BIOS / UEFI</h3>
+                <p>Learn about the boot process.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="displayBox" class="info-display">
+        <h2 id="displayTitle" style="margin-top:0; color:#4f46e5;"></h2>
+        <p id="displayText" style="font-size:1.1rem; color:#334155;"></p>
+    </div>
+
+</div>
+
+<script>
+    // Data Storage
+    const infoData = {
+        'RAM': 'Random Access Memory (RAM) acts as your computer\'s short-term memory. When you open a program, it is loaded from your slow hard drive into your fast RAM so the CPU can work with it instantly. It is "volatile," meaning it needs power to hold data; once the computer turns off, the RAM is cleared. The more RAM you have, the more programs you can run at once without the system slowing down or "swapping" data to the disk.',
+        'CPU': 'The Central Processing Unit (CPU) is the brain of the computer. It handles all the basic instructions and calculations that make the computer run. Every time you move your mouse or open a file, billions of tiny transistors inside the CPU work together to process that command. Modern CPUs have multiple "cores," which are like having multiple brains working on different parts of a task at the same time.',
+        'Motherboard': 'The Motherboard is the main circuit board that connects every part of your computer together. Think of it as the nervous system. It allows the CPU, RAM, and Storage to communicate with each other through "buses" (data pathways). It also provides power from the Power Supply to all the individual components and houses the BIOS chip that starts the computer.',
+        'OS': 'The Operating System (OS) is the most important software on a computer. It manages all the hardware and allows you to interact with the computer through a visual interface. It handles background tasks like memory management, file systems, and security. Without an OS like Windows or Linux, you would have to type complex code manually just to perform a simple task like saving a document.',
+        'BIOS': 'The BIOS (Basic Input/Output System) is the very first piece of software your computer runs when you hit the power button. It is stored on a small chip on the motherboard. Its job is to wake up the hardware, check that everything is working (called a POST test), and then tell the hardware to load the Operating System from your drive.'
+    };
+
+    // Navigation Logic
+    function tab(id) {
+        // Hide all
+        const pages = document.getElementsByClassName('page');
+        for(let p of pages) { p.style.display = 'none'; }
+        
+        const btns = document.getElementsByClassName('nav-btn');
+        for(let b of btns) { b.classList.remove('active'); }
+
+        // Show selected
+        document.getElementById(id).style.display = 'block';
+        event.currentTarget.classList.add('active');
+        
+        // Reset info box
+        document.getElementById('displayBox').style.display = 'none';
+    }
+
+    // Explanation Logic
+    function showInfo(key) {
+        const box = document.getElementById('displayBox');
+        document.getElementById('displayTitle').innerText = key;
+        document.getElementById('displayText').innerText = infoData[key];
+        box.style.display = 'block';
+        box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Logging Logic
+    function saveData() {
+        const d = document.getElementById('dev').value;
+        const i = document.getElementById('iss').value;
+        const s = document.getElementById('sol').value;
+
+        if(!d || !i) { alert("Please enter device and issue!"); return; }
+
+        const entry = `
+            <div class="log-entry">
+                <strong>Device:</strong> ${d}<br>
+                <strong>Problem:</strong> ${i}<hr>
+                <p>${s}</p>
+                <small>${new Date().toLocaleString()}</small>
+            </div>
+        `;
+        document.getElementById('history').insertAdjacentHTML('afterbegin', entry);
+        
+        // Clear inputs
+        document.getElementById('dev').value = '';
+        document.getElementById('iss').value = '';
+        document.getElementById('sol').value = '';
+    }
+</script>
+
+</body>
+</html>
