@@ -115,9 +115,9 @@
         }
         .dropdown button:hover { background: #f3f4f6; }
 
-        /* Grid for Info */
+        /* Grid Layouts */
         .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-        .info-card { background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; text-align: center; }
+        .info-card { background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; text-align: center; font-weight: bold; }
         .info-card:hover { border-color: var(--primary); }
 
         .detail-panel { 
@@ -134,6 +134,7 @@
         <span id="nav-log" class="active" onclick="showTab('log-tab')">Logs</span>
         <span id="nav-hw" onclick="showTab('hw-tab')">Hardware</span>
         <span id="nav-sw" onclick="showTab('sw-tab')">Software</span>
+        <span id="nav-fix" onclick="showTab('fix-tab')">Quick Fixes</span>
     </div>
 </header>
 
@@ -152,13 +153,12 @@
 
     <div id="hw-tab" class="page">
         <h3>Hardware Components</h3>
-        <p>Select a part to view its detailed functions and role in the system.</p>
         <div class="info-grid">
             <div class="info-card" onclick="openInfo('Motherboard')">📟 Motherboard</div>
             <div class="info-card" onclick="openInfo('CPU')">⚡ CPU</div>
             <div class="info-card" onclick="openInfo('RAM')">🧠 RAM</div>
             <div class="info-card" onclick="openInfo('GPU')">🎮 GPU</div>
-            <div class="info-card" onclick="openInfo('PSU')">🔌 Power Supply</div>
+            <div class="info-card" onclick="openInfo('Power Supply')">🔌 Power Supply</div>
             <div class="info-card" onclick="openInfo('Storage')">💾 SSD / HDD</div>
         </div>
     </div>
@@ -173,6 +173,18 @@
         </div>
     </div>
 
+    <div id="fix-tab" class="page">
+        <h3>Common Troubleshooting Guide</h3>
+        <p>Common issues for those who prefer to check a manual before asking on the forum.</p>
+        <div class="info-grid">
+            <div class="info-card" onclick="openInfo('Blue Screen')">🟦 Blue Screen (BSOD)</div>
+            <div class="info-card" onclick="openInfo('No Internet')">🌐 No Internet Connection</div>
+            <div class="info-card" onclick="openInfo('Slow Computer')">🐢 Computer is Slow</div>
+            <div class="info-card" onclick="openInfo('Beep Codes')">🔊 Computer Beeping</div>
+            <div class="info-card" onclick="openInfo('Overheating')">🔥 Overheating / Loud Fan</div>
+        </div>
+    </div>
+
     <div id="detailPanel" class="detail-panel">
         <h2 id="detailTitle" style="margin-top:0;"></h2>
         <p id="detailText"></p>
@@ -181,16 +193,23 @@
 
 <script>
     const itData = {
-        'Motherboard': 'The Motherboard is the main printed circuit board (PCB) of a computer. it acts as the central hub that allows all other components like the CPU, RAM, and Storage to communicate with each other. It contains the chipset, which determines the features and compatibility of the PC, and provides electrical pathways called "buses" to transfer data between parts.',
-        'CPU': 'The Central Processing Unit (CPU) is the primary component of a computer that acts as its "control center." It processes instructions, performs mathematical calculations, and manages data flow. Modern CPUs use multiple "cores" to process different tasks at the same time, which is essential for multitasking and high-performance software.',
-        'RAM': 'Random Access Memory (RAM) is a computer\'s short-term memory. It stores the data that a computer is actively using so that it can be accessed quickly. The more RAM a computer has, the more apps it can run simultaneously without slowing down. It is "volatile," meaning all data is wiped once the power is cut.',
-        'GPU': 'The Graphics Processing Unit (GPU) is specialized for rendering images, animations, and video. While the CPU handles general logic, the GPU performs the rapid mathematical calculations needed for high-quality graphics in gaming, 3D modeling, and video editing. Some are built into the CPU (Integrated), while others are separate cards (Dedicated).',
-        'Power Supply': 'The Power Supply Unit (PSU) converts the high-voltage Alternating Current (AC) from your wall outlet into the low-voltage Direct Current (DC) required by internal computer components. It ensures a steady flow of power; a low-quality PSU can cause system crashes or even permanent hardware damage.',
-        'Storage': 'Storage refers to permanent data retention. SSDs (Solid State Drives) use flash memory and are significantly faster for booting windows and loading apps. HDDs (Hard Disk Drives) use spinning magnetic platters and are typically used for storing large amounts of data cheaply.',
-        'OS': 'An Operating System (OS) is the software that manages all other application programs in a computer. It handles hardware resources like memory and disk space. Common examples include Windows, macOS, and Linux. It provides the Graphical User Interface (GUI) so you can interact with the machine without typing code.',
-        'Drivers': 'Device Drivers are specialized software files that tell the Operating System exactly how to communicate with a specific piece of hardware. For example, a printer driver translates the OS "Print" command into a language the specific printer model understands. Without drivers, your hardware will not function correctly.',
-        'BIOS': 'The BIOS (Basic Input/Output System) is the firmware used to provide runtime services for operating systems and programs and to perform hardware initialization during the booting process. It is the first thing that runs when you press the power button, ensuring your RAM and CPU are working before loading the OS.',
-        'Firmware': 'Firmware is a specific type of software that is "hard-coded" into a hardware device. It provides low-level control for the device\'s specific hardware. Unlike regular software, firmware is rarely updated and is essential for the basic operation of devices like routers, keyboards, and cameras.'
+        'Motherboard': 'The Motherboard is the main printed circuit board (PCB) of a computer. It acts as the central hub that allows all other components like the CPU, RAM, and Storage to communicate with each other.',
+        'CPU': 'The Central Processing Unit (CPU) is the "brain" of the computer. It handles all basic instructions and mathematical calculations.',
+        'RAM': 'Random Access Memory (RAM) is the "working memory." It stores data the CPU needs right now. It is wiped when power is lost.',
+        'GPU': 'The Graphics Processing Unit (GPU) handles rendering images and videos. Essential for gaming and high-end video work.',
+        'Power Supply': 'The PSU converts wall electricity into the low-voltage power your PC parts need.',
+        'Storage': 'SSDs are fast flash storage for your OS and apps. HDDs are slower magnetic disks used for storing massive amounts of files.',
+        'OS': 'Software like Windows or macOS that manages the hardware and allows you to interact with the computer.',
+        'Drivers': 'Translator software that tells the OS how to talk to specific hardware like printers or graphics cards.',
+        'BIOS': 'The very first code that runs when you turn on your PC. It checks if the hardware is okay before loading the OS.',
+        'Firmware': 'Permanent software programmed into a hardware device (like a router or keyboard) for its basic operation.',
+        
+        // Troubleshooting Data
+        'Blue Screen': 'A "Blue Screen of Death" usually means a hardware or driver failure. SOLUTION: Restart your PC. If it continues, check for Windows Updates or uninstall any recently added hardware/drivers. You can also run "Memory Diagnostic" to check if your RAM is dying.',
+        'No Internet': 'The most common cause is a router glitch or a disabled network adapter. SOLUTION: Check your "Airplane Mode" settings. If that is off, try restarting your router (unplug for 30 seconds). If you are on a PC, go to "Network Connections" and ensure your Ethernet/Wi-Fi adapter is set to Enabled.',
+        'Slow Computer': 'Often caused by too many background apps or a full storage drive. SOLUTION: Open Task Manager (Ctrl + Shift + Esc) and see what is using 100% of your CPU. Disable "Startup" programs you don't need. Also, ensure your C: drive has at least 20GB of free space.',
+        'Beep Codes': 'If your computer beeps and wont start, it is a hardware error. SOLUTION: One long beep followed by two short ones often means a Graphics Card or RAM issue. Try "Reseating" (taking out and putting back in) your RAM sticks. Make sure they click into place firmly.',
+        'Overheating': 'Caused by dust buildup or a failed fan. SOLUTION: Use a can of compressed air to blow dust out of the vents. Ensure the computer is on a hard surface (not a bed or carpet) so the fans can breathe. If the fan is making a grinding noise, it likely needs replacement.'
     };
 
     let posts = JSON.parse(localStorage.getItem('it_posts')) || [];
