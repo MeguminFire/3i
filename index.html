@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Knowledge & Forum Logs</title>
+    <title>IT Troubleshooting Hub</title>
     <style>
         :root {
             --primary: #4f46e5;
@@ -22,7 +22,6 @@
             line-height: 1.6;
         }
 
-        /* Forum Header */
         header {
             background: #ffffff;
             border-bottom: 1px solid var(--border);
@@ -40,7 +39,7 @@
             cursor: pointer;
             font-weight: 600;
             color: var(--text-muted);
-            transition: 0.2s;
+            padding-bottom: 5px;
         }
         .nav-links span.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
 
@@ -48,7 +47,7 @@
         .page { display: none; }
         .page.active { display: block; }
 
-        /* Forum Post Creator */
+        /* Post Creator */
         .post-creator {
             background: white;
             padding: 20px;
@@ -57,13 +56,14 @@
             margin-bottom: 25px;
         }
 
-        input, textarea, select {
+        input, textarea {
             width: 100%;
             padding: 12px;
             margin-bottom: 10px;
             border: 1px solid var(--border);
             border-radius: 6px;
             background: #f9fafb;
+            box-sizing: border-box;
         }
 
         .btn-post {
@@ -77,7 +77,7 @@
             float: right;
         }
 
-        /* Forum Feed Item */
+        /* Forum Post */
         .forum-post {
             background: white;
             border: 1px solid var(--border);
@@ -88,25 +88,15 @@
         }
 
         .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .user-avatar { width: 40px; height: 40px; background: #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; background: var(--primary); }
-        .post-info h4 { margin: 0; font-size: 1rem; }
-        .post-info span { font-size: 0.8rem; color: var(--text-muted); }
-
-        .post-body { margin-top: 10px; }
-        .tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; background: var(--primary); }
+        
+        .tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; margin-bottom: 8px; }
         .tag-solved { background: #dcfce7; color: #166534; }
         .tag-pending { background: #fef9c3; color: #854d0e; }
 
-        /* 3-Dots Menu */
+        /* Menu */
         .menu-container { position: absolute; top: 15px; right: 15px; }
-        .dots-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-muted);
-            padding: 5px;
-        }
+        .dots-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
         .dropdown {
             position: absolute;
             right: 0;
@@ -117,36 +107,33 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             display: none;
             z-index: 10;
-            width: 120px;
+            width: 160px;
         }
         .dropdown button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            text-align: left;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
+            display: block; width: 100%; padding: 10px; text-align: left;
+            background: none; border: none; cursor: pointer; font-size: 0.9rem;
         }
         .dropdown button:hover { background: #f3f4f6; }
 
-        /* Knowledge Base */
-        .kb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .kb-card { background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
-        .kb-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        /* Grid for Info */
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        .info-card { background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; text-align: center; }
+        .info-card:hover { border-color: var(--primary); }
 
-        .info-panel { background: #eef2ff; padding: 25px; border-radius: 10px; margin-top: 20px; display: none; border-left: 4px solid var(--primary); }
+        .detail-panel { 
+            background: #ffffff; padding: 30px; border-radius: 10px; margin-top: 20px; 
+            display: none; border-left: 5px solid var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h2 style="color: var(--primary); margin:0;">IT Community Hub</h2>
+    <h2 style="color: var(--primary); margin:0;">IT Systems Hub</h2>
     <div class="nav-links">
-        <span id="nav-log" class="active" onclick="showTab('log-tab')">Repair Feed</span>
-        <span id="nav-hw" onclick="showTab('hw-tab')">Hardware Wiki</span>
-        <span id="nav-sw" onclick="showTab('sw-tab')">Software Wiki</span>
+        <span id="nav-log" class="active" onclick="showTab('log-tab')">Logs</span>
+        <span id="nav-hw" onclick="showTab('hw-tab')">Hardware</span>
+        <span id="nav-sw" onclick="showTab('sw-tab')">Software</span>
     </div>
 </header>
 
@@ -154,13 +141,9 @@
     
     <div id="log-tab" class="page active">
         <div class="post-creator">
-            <input type="text" id="dev" placeholder="Device (e.g., MacBook Pro 2021)">
+            <input type="text" id="dev" placeholder="Device Name...">
             <input type="text" id="iss" placeholder="What is the issue?">
-            <textarea id="sol" rows="3" placeholder="Explain the fix or steps taken..."></textarea>
-            <select id="stat">
-                <option value="solved">Status: Solved</option>
-                <option value="pending">Status: Pending</option>
-            </select>
+            <textarea id="sol" rows="3" placeholder="Troubleshooting steps or resolution..."></textarea>
             <button class="btn-post" onclick="addPost()">Post Log</button>
             <div style="clear:both;"></div>
         </div>
@@ -169,55 +152,61 @@
 
     <div id="hw-tab" class="page">
         <h3>Hardware Components</h3>
-        <div class="kb-grid">
-            <div class="kb-card" onclick="openWiki('CPU')"><strong>CPU</strong><br><small>The Central Processor</small></div>
-            <div class="kb-card" onclick="openWiki('RAM')"><strong>RAM</strong><br><small>Memory Management</small></div>
-            <div class="kb-card" onclick="openWiki('GPU')"><strong>GPU</strong><br><small>Graphics Power</small></div>
-            <div class="kb-card" onclick="openWiki('STORAGE')"><strong>SSD / HDD</strong><br><small>Data Storage</small></div>
+        <p>Select a part to view its detailed functions and role in the system.</p>
+        <div class="info-grid">
+            <div class="info-card" onclick="openInfo('Motherboard')">📟 Motherboard</div>
+            <div class="info-card" onclick="openInfo('CPU')">⚡ CPU</div>
+            <div class="info-card" onclick="openInfo('RAM')">🧠 RAM</div>
+            <div class="info-card" onclick="openInfo('GPU')">🎮 GPU</div>
+            <div class="info-card" onclick="openInfo('PSU')">🔌 Power Supply</div>
+            <div class="info-card" onclick="openInfo('Storage')">💾 SSD / HDD</div>
         </div>
     </div>
 
     <div id="sw-tab" class="page">
         <h3>Software Systems</h3>
-        <div class="kb-grid">
-            <div class="kb-card" onclick="openWiki('OS')"><strong>Operating System</strong><br><small>System Logic</small></div>
-            <div class="kb-card" onclick="openWiki('BIOS')"><strong>BIOS / UEFI</strong><br><small>Firmware Startup</small></div>
+        <div class="info-grid">
+            <div class="info-card" onclick="openInfo('OS')">🖥️ Operating System</div>
+            <div class="info-card" onclick="openInfo('Drivers')">⚙️ Device Drivers</div>
+            <div class="info-card" onclick="openInfo('BIOS')">📟 BIOS / UEFI</div>
+            <div class="info-card" onclick="openInfo('Firmware')">🛠️ Firmware</div>
         </div>
     </div>
 
-    <div id="infoPanel" class="info-panel">
-        <h2 id="infoTitle" style="margin-top:0;"></h2>
-        <p id="infoText"></p>
+    <div id="detailPanel" class="detail-panel">
+        <h2 id="detailTitle" style="margin-top:0;"></h2>
+        <p id="detailText"></p>
     </div>
-
 </div>
 
 <script>
-    // Data for Wiki
-    const wikiData = {
-        'CPU': 'The Central Processing Unit (CPU) is the brain of the computer. It carries out every instruction of a computer program by performing basic arithmetic, logic, controlling, and input/output operations. Modern processors have multiple cores to handle multitasking efficiently.',
-        'RAM': 'Random Access Memory (RAM) is the "working memory" of a PC. It stores data that the CPU needs in real-time. Unlike storage (SSD), RAM is cleared every time you restart your computer. Having more RAM allows you to open more Chrome tabs and apps without the system freezing.',
-        'GPU': 'The Graphics Processing Unit (GPU) is a specialized processor originally designed to accelerate graphics rendering. It is now essential for high-end gaming, video editing, and AI processing because it can perform thousands of small tasks simultaneously.',
-        'STORAGE': 'Storage devices like SSDs (Solid State Drives) and HDDs (Hard Drives) hold your files permanently. SSDs are much faster because they use flash memory, whereas HDDs use spinning magnetic disks which are prone to physical failure over time.',
-        'OS': 'The Operating System (OS) is the main software that manages hardware and other apps. Whether it is Windows, macOS, or Linux, the OS provides the interface that allows you to click icons and open files without needing to understand machine code.',
-        'BIOS': 'The BIOS (Basic Input/Output System) is the very first program that runs when you power on. It checks if your hardware is healthy and then hands the responsibility to the Operating System to boot up.'
+    const itData = {
+        'Motherboard': 'The Motherboard is the main printed circuit board (PCB) of a computer. it acts as the central hub that allows all other components like the CPU, RAM, and Storage to communicate with each other. It contains the chipset, which determines the features and compatibility of the PC, and provides electrical pathways called "buses" to transfer data between parts.',
+        'CPU': 'The Central Processing Unit (CPU) is the primary component of a computer that acts as its "control center." It processes instructions, performs mathematical calculations, and manages data flow. Modern CPUs use multiple "cores" to process different tasks at the same time, which is essential for multitasking and high-performance software.',
+        'RAM': 'Random Access Memory (RAM) is a computer\'s short-term memory. It stores the data that a computer is actively using so that it can be accessed quickly. The more RAM a computer has, the more apps it can run simultaneously without slowing down. It is "volatile," meaning all data is wiped once the power is cut.',
+        'GPU': 'The Graphics Processing Unit (GPU) is specialized for rendering images, animations, and video. While the CPU handles general logic, the GPU performs the rapid mathematical calculations needed for high-quality graphics in gaming, 3D modeling, and video editing. Some are built into the CPU (Integrated), while others are separate cards (Dedicated).',
+        'Power Supply': 'The Power Supply Unit (PSU) converts the high-voltage Alternating Current (AC) from your wall outlet into the low-voltage Direct Current (DC) required by internal computer components. It ensures a steady flow of power; a low-quality PSU can cause system crashes or even permanent hardware damage.',
+        'Storage': 'Storage refers to permanent data retention. SSDs (Solid State Drives) use flash memory and are significantly faster for booting windows and loading apps. HDDs (Hard Disk Drives) use spinning magnetic platters and are typically used for storing large amounts of data cheaply.',
+        'OS': 'An Operating System (OS) is the software that manages all other application programs in a computer. It handles hardware resources like memory and disk space. Common examples include Windows, macOS, and Linux. It provides the Graphical User Interface (GUI) so you can interact with the machine without typing code.',
+        'Drivers': 'Device Drivers are specialized software files that tell the Operating System exactly how to communicate with a specific piece of hardware. For example, a printer driver translates the OS "Print" command into a language the specific printer model understands. Without drivers, your hardware will not function correctly.',
+        'BIOS': 'The BIOS (Basic Input/Output System) is the firmware used to provide runtime services for operating systems and programs and to perform hardware initialization during the booting process. It is the first thing that runs when you press the power button, ensuring your RAM and CPU are working before loading the OS.',
+        'Firmware': 'Firmware is a specific type of software that is "hard-coded" into a hardware device. It provides low-level control for the device\'s specific hardware. Unlike regular software, firmware is rarely updated and is essential for the basic operation of devices like routers, keyboards, and cameras.'
     };
 
-    // Initialize logs from LocalStorage
-    let posts = JSON.parse(localStorage.getItem('it_forum_logs')) || [];
+    let posts = JSON.parse(localStorage.getItem('it_posts')) || [];
 
-    function showTab(tab) {
+    function showTab(tabId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-links span').forEach(s => s.classList.remove('active'));
-        document.getElementById(tab).classList.add('active');
-        document.getElementById('nav-' + tab.split('-')[0]).classList.add('active');
-        document.getElementById('infoPanel').style.display = 'none';
+        document.getElementById(tabId).classList.add('active');
+        document.getElementById('nav-' + tabId.split('-')[0]).classList.add('active');
+        document.getElementById('detailPanel').style.display = 'none';
     }
 
-    function openWiki(key) {
-        const panel = document.getElementById('infoPanel');
-        document.getElementById('infoTitle').innerText = key;
-        document.getElementById('infoText').innerText = wikiData[key];
+    function openInfo(key) {
+        const panel = document.getElementById('detailPanel');
+        document.getElementById('detailTitle').innerText = key;
+        document.getElementById('detailText').innerText = itData[key];
         panel.style.display = 'block';
         panel.scrollIntoView({ behavior: 'smooth' });
     }
@@ -231,23 +220,24 @@
                     <div class="menu-container">
                         <button class="dots-btn" onclick="toggleMenu(${index})">⋮</button>
                         <div id="menu-${index}" class="dropdown">
-                            <button onclick="editPost(${index})">✏️ Edit</button>
-                            <button onclick="copyPost(${index})">📋 Copy</button>
+                            <button onclick="updateStatus(${index}, 'solved')">✅ Mark Solved</button>
+                            <button onclick="updateStatus(${index}, 'pending')">⏳ Mark Pending</button>
+                            <hr style="margin:5px 0; border:0; border-top:1px solid #eee;">
+                            <button onclick="editPost(${index})">✏️ Edit Text</button>
+                            <button onclick="copyPost(${index})">📋 Copy Log</button>
                             <button style="color:red;" onclick="deletePost(${index})">🗑️ Delete</button>
                         </div>
                     </div>
                     <div class="post-header">
-                        <div class="user-avatar">${post.dev.charAt(0)}</div>
-                        <div class="post-info">
-                            <h4>User Terminal - ${post.dev}</h4>
-                            <span>Posted on ${post.date}</span>
+                        <div class="user-avatar">${post.dev.charAt(0).toUpperCase()}</div>
+                        <div>
+                            <h4 style="margin:0;">${post.dev}</h4>
+                            <span style="font-size:0.8rem; color:var(--text-muted);">${post.date}</span>
                         </div>
                     </div>
-                    <div class="post-body">
-                        <span class="tag ${post.stat === 'solved' ? 'tag-solved' : 'tag-pending'}">${post.stat}</span>
-                        <div style="font-weight:bold; font-size:1.1rem; margin-bottom:5px;">${post.iss}</div>
-                        <p style="color:#4b5563; margin:0;">${post.sol}</p>
-                    </div>
+                    <span class="tag ${post.stat === 'solved' ? 'tag-solved' : 'tag-pending'}">${post.stat}</span>
+                    <div style="font-weight:bold;">${post.iss}</div>
+                    <p style="margin:5px 0 0 0; color:#4b5563;">${post.sol}</p>
                 </div>
             `;
             area.insertAdjacentHTML('beforeend', html);
@@ -258,15 +248,10 @@
         const dev = document.getElementById('dev').value;
         const iss = document.getElementById('iss').value;
         const sol = document.getElementById('sol').value;
-        const stat = document.getElementById('stat').value;
+        if(!dev || !iss) return alert("Please fill in Device and Issue");
 
-        if(!dev || !iss) return alert("Please fill in the device and issue.");
-
-        const newPost = { dev, iss, sol, stat, date: new Date().toLocaleString() };
-        posts.unshift(newPost);
-        localStorage.setItem('it_forum_logs', JSON.stringify(posts));
-        
-        // Reset and show
+        posts.unshift({ dev, iss, sol, stat: 'pending', date: new Date().toLocaleString() });
+        localStorage.setItem('it_posts', JSON.stringify(posts));
         document.getElementById('dev').value = '';
         document.getElementById('iss').value = '';
         document.getElementById('sol').value = '';
@@ -275,41 +260,41 @@
 
     function toggleMenu(index) {
         const menu = document.getElementById(`menu-${index}`);
-        const allMenus = document.querySelectorAll('.dropdown');
-        allMenus.forEach(m => { if(m !== menu) m.style.display = 'none'; });
+        document.querySelectorAll('.dropdown').forEach(d => { if(d !== menu) d.style.display='none'; });
         menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
     }
 
-    function deletePost(index) {
-        posts.splice(index, 1);
-        localStorage.setItem('it_forum_logs', JSON.stringify(posts));
+    function updateStatus(index, newStat) {
+        posts[index].stat = newStat;
+        localStorage.setItem('it_posts', JSON.stringify(posts));
         renderPosts();
     }
 
     function editPost(index) {
-        const newSol = prompt("Update the resolution details:", posts[index].sol);
-        if(newSol !== null) {
-            posts[index].sol = newSol;
-            localStorage.setItem('it_forum_logs', JSON.stringify(posts));
+        const res = prompt("Update resolution:", posts[index].sol);
+        if(res !== null) {
+            posts[index].sol = res;
+            localStorage.setItem('it_posts', JSON.stringify(posts));
+            renderPosts();
+        }
+    }
+
+    function deletePost(index) {
+        if(confirm("Delete this log?")) {
+            posts.splice(index, 1);
+            localStorage.setItem('it_posts', JSON.stringify(posts));
             renderPosts();
         }
     }
 
     function copyPost(index) {
-        const text = `Device: ${posts[index].dev}\nIssue: ${posts[index].iss}\nResolution: ${posts[index].sol}`;
-        navigator.clipboard.writeText(text);
-        alert("Post details copied!");
+        navigator.clipboard.writeText(`${posts[index].dev}: ${posts[index].iss} - ${posts[index].sol}`);
+        alert("Copied!");
     }
 
-    // Close menus when clicking outside
-    window.onclick = function(event) {
-        if (!event.target.matches('.dots-btn')) {
-            document.querySelectorAll('.dropdown').forEach(m => m.style.display = 'none');
-        }
-    }
+    window.onclick = e => { if(!e.target.matches('.dots-btn')) document.querySelectorAll('.dropdown').forEach(d => d.style.display='none'); }
 
     renderPosts();
 </script>
-
 </body>
 </html>
