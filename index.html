@@ -14,40 +14,59 @@
             --border: #e2e8f0;
         }
 
+        /* Prevent unwanted blocking layers */
+        * { box-sizing: border-box; }
+
         body {
             font-family: 'Segoe UI', Tahoma, sans-serif;
             background-color: var(--bg);
             color: var(--text-main);
             margin: 0;
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
         header {
             background: #ffffff;
             border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            padding: 1rem;
+            text-align: center;
+            position: relative; /* Changed from sticky to relative to prevent blocking */
+            z-index: 10;
         }
 
-        .nav-links { display: flex; gap: 20px; }
+        .nav-links { 
+            display: flex; 
+            justify-content: center; 
+            gap: 15px; 
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
         .nav-links span {
             cursor: pointer;
             font-weight: 600;
             color: var(--text-muted);
-            padding-bottom: 5px;
+            padding: 5px 10px;
+            transition: 0.2s;
         }
-        .nav-links span.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
 
-        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
+        .nav-links span.active { 
+            color: var(--primary); 
+            border-bottom: 2px solid var(--primary); 
+        }
+
+        .container { 
+            max-width: 800px; 
+            margin: 20px auto; 
+            padding: 0 15px;
+            position: relative;
+        }
+
         .page { display: none; }
         .page.active { display: block; }
 
-        /* Post Creator */
+        /* Form Styling */
         .post-creator {
             background: white;
             padding: 20px;
@@ -63,7 +82,6 @@
             border: 1px solid var(--border);
             border-radius: 6px;
             background: #f9fafb;
-            box-sizing: border-box;
         }
 
         .btn-post {
@@ -74,10 +92,9 @@
             border-radius: 20px;
             font-weight: bold;
             cursor: pointer;
-            float: right;
         }
 
-        /* Forum Post */
+        /* Post Items */
         .forum-post {
             background: white;
             border: 1px solid var(--border);
@@ -87,42 +104,76 @@
             padding: 20px;
         }
 
-        .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; background: var(--primary); }
-        
-        .tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; margin-bottom: 8px; }
+        .tag { 
+            display: inline-block; 
+            padding: 2px 10px; 
+            border-radius: 12px; 
+            font-size: 0.75rem; 
+            font-weight: bold; 
+            margin-bottom: 8px; 
+        }
         .tag-solved { background: #dcfce7; color: #166534; }
         .tag-pending { background: #fef9c3; color: #854d0e; }
 
-        /* Menu */
+        /* The Menu (Meatball) */
         .menu-container { position: absolute; top: 15px; right: 15px; }
-        .dots-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+        .dots-btn { 
+            background: none; 
+            border: none; 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            color: var(--text-muted); 
+            line-height: 1;
+        }
+
         .dropdown {
             position: absolute;
             right: 0;
-            top: 30px;
+            top: 25px;
             background: white;
             border: 1px solid var(--border);
             border-radius: 6px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             display: none;
-            z-index: 10;
-            width: 160px;
+            z-index: 100;
+            width: 150px;
         }
+
         .dropdown button {
             display: block; width: 100%; padding: 10px; text-align: left;
             background: none; border: none; cursor: pointer; font-size: 0.9rem;
         }
         .dropdown button:hover { background: #f3f4f6; }
 
-        /* Grid Layouts */
-        .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-        .info-card { background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; text-align: center; font-weight: bold; }
-        .info-card:hover { border-color: var(--primary); }
+        /* Grid for Cards */
+        .info-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+            gap: 15px; 
+            margin-top: 15px;
+        }
+
+        .info-card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            cursor: pointer; 
+            text-align: center; 
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .info-card:hover { border-color: var(--primary); transform: translateY(-2px); }
 
         .detail-panel { 
-            background: #ffffff; padding: 30px; border-radius: 10px; margin-top: 20px; 
-            display: none; border-left: 5px solid var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            background: #ffffff; 
+            padding: 30px; 
+            border-radius: 10px; 
+            margin-top: 20px; 
+            display: none; 
+            border-left: 5px solid var(--primary); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
     </style>
 </head>
@@ -158,65 +209,62 @@
             <div class="info-card" onclick="openInfo('CPU')">⚡ CPU</div>
             <div class="info-card" onclick="openInfo('RAM')">🧠 RAM</div>
             <div class="info-card" onclick="openInfo('GPU')">🎮 GPU</div>
-            <div class="info-card" onclick="openInfo('Power Supply')">🔌 Power Supply</div>
-            <div class="info-card" onclick="openInfo('Storage')">💾 SSD / HDD</div>
+            <div class="info-card" onclick="openInfo('Power Supply')">🔌 PSU</div>
+            <div class="info-card" onclick="openInfo('Storage')">💾 Storage</div>
         </div>
     </div>
 
     <div id="sw-tab" class="page">
         <h3>Software Systems</h3>
         <div class="info-grid">
-            <div class="info-card" onclick="openInfo('OS')">🖥️ Operating System</div>
-            <div class="info-card" onclick="openInfo('Drivers')">⚙️ Device Drivers</div>
-            <div class="info-card" onclick="openInfo('BIOS')">📟 BIOS / UEFI</div>
+            <div class="info-card" onclick="openInfo('OS')">🖥️ OS</div>
+            <div class="info-card" onclick="openInfo('Drivers')">⚙️ Drivers</div>
+            <div class="info-card" onclick="openInfo('BIOS')">📟 BIOS</div>
             <div class="info-card" onclick="openInfo('Firmware')">🛠️ Firmware</div>
         </div>
     </div>
 
     <div id="fix-tab" class="page">
-        <h3>Common Troubleshooting Guide</h3>
-        <p>Common issues for those who prefer to check a manual before asking on the forum.</p>
+        <h3>Quick Fixes</h3>
+        <p>Common solutions for immediate help:</p>
         <div class="info-grid">
-            <div class="info-card" onclick="openInfo('Blue Screen')">🟦 Blue Screen (BSOD)</div>
-            <div class="info-card" onclick="openInfo('No Internet')">🌐 No Internet Connection</div>
-            <div class="info-card" onclick="openInfo('Slow Computer')">🐢 Computer is Slow</div>
-            <div class="info-card" onclick="openInfo('Beep Codes')">🔊 Computer Beeping</div>
-            <div class="info-card" onclick="openInfo('Overheating')">🔥 Overheating / Loud Fan</div>
+            <div class="info-card" onclick="openInfo('BSOD')">🟦 Blue Screen</div>
+            <div class="info-card" onclick="openInfo('Internet')">🌐 No Internet</div>
+            <div class="info-card" onclick="openInfo('Slow')">🐢 Slow PC</div>
+            <div class="info-card" onclick="openInfo('Beeps')">🔊 Beep Codes</div>
         </div>
     </div>
 
     <div id="detailPanel" class="detail-panel">
-        <h2 id="detailTitle" style="margin-top:0;"></h2>
-        <p id="detailText"></p>
+        <h2 id="detailTitle" style="margin:0 0 10px 0;"></h2>
+        <p id="detailText" style="margin:0;"></p>
     </div>
 </div>
 
 <script>
     const itData = {
-        'Motherboard': 'The Motherboard is the main printed circuit board (PCB) of a computer. It acts as the central hub that allows all other components like the CPU, RAM, and Storage to communicate with each other.',
-        'CPU': 'The Central Processing Unit (CPU) is the "brain" of the computer. It handles all basic instructions and mathematical calculations.',
-        'RAM': 'Random Access Memory (RAM) is the "working memory." It stores data the CPU needs right now. It is wiped when power is lost.',
-        'GPU': 'The Graphics Processing Unit (GPU) handles rendering images and videos. Essential for gaming and high-end video work.',
-        'Power Supply': 'The PSU converts wall electricity into the low-voltage power your PC parts need.',
-        'Storage': 'SSDs are fast flash storage for your OS and apps. HDDs are slower magnetic disks used for storing massive amounts of files.',
-        'OS': 'Software like Windows or macOS that manages the hardware and allows you to interact with the computer.',
-        'Drivers': 'Translator software that tells the OS how to talk to specific hardware like printers or graphics cards.',
-        'BIOS': 'The very first code that runs when you turn on your PC. It checks if the hardware is okay before loading the OS.',
-        'Firmware': 'Permanent software programmed into a hardware device (like a router or keyboard) for its basic operation.',
-        
-        // Troubleshooting Data
-        'Blue Screen': 'A "Blue Screen of Death" usually means a hardware or driver failure. SOLUTION: Restart your PC. If it continues, check for Windows Updates or uninstall any recently added hardware/drivers. You can also run "Memory Diagnostic" to check if your RAM is dying.',
-        'No Internet': 'The most common cause is a router glitch or a disabled network adapter. SOLUTION: Check your "Airplane Mode" settings. If that is off, try restarting your router (unplug for 30 seconds). If you are on a PC, go to "Network Connections" and ensure your Ethernet/Wi-Fi adapter is set to Enabled.',
-        'Slow Computer': 'Often caused by too many background apps or a full storage drive. SOLUTION: Open Task Manager (Ctrl + Shift + Esc) and see what is using 100% of your CPU. Disable "Startup" programs you don't need. Also, ensure your C: drive has at least 20GB of free space.',
-        'Beep Codes': 'If your computer beeps and wont start, it is a hardware error. SOLUTION: One long beep followed by two short ones often means a Graphics Card or RAM issue. Try "Reseating" (taking out and putting back in) your RAM sticks. Make sure they click into place firmly.',
-        'Overheating': 'Caused by dust buildup or a failed fan. SOLUTION: Use a can of compressed air to blow dust out of the vents. Ensure the computer is on a hard surface (not a bed or carpet) so the fans can breathe. If the fan is making a grinding noise, it likely needs replacement.'
+        'Motherboard': 'The Motherboard is the primary circuit board that connects all components. It provides the "bus" pathways for data and the power distribution for the CPU and RAM.',
+        'CPU': 'The Central Processing Unit is the brain. It handles billions of calculations per second to run your software.',
+        'RAM': 'Random Access Memory is temporary high-speed storage. It holds data the CPU is currently using. It is wiped when power is lost.',
+        'GPU': 'The Graphics Processing Unit renders everything you see on screen. It is vital for video, 3D work, and gaming.',
+        'Power Supply': 'The PSU converts wall power (AC) into computer power (DC). Without a stable PSU, hardware can be damaged.',
+        'Storage': 'SSDs and HDDs save your files permanently. SSDs are much faster and have no moving parts.',
+        'OS': 'The Operating System (Windows, macOS, Linux) manages the hardware and provides the interface you see.',
+        'Drivers': 'Drivers act as translators between the OS and hardware devices like printers or cameras.',
+        'BIOS': 'Basic Input/Output System. It is the first code that runs to test hardware before the OS loads.',
+        'Firmware': 'Software embedded directly into hardware. It tells a device like a router how to function.',
+        'BSOD': 'Blue Screen of Death: Usually caused by driver conflicts or failing RAM. Try restarting and running Windows Update.',
+        'Internet': 'No Internet: Check your physical cable or Wi-Fi toggle. Try resetting your router by unplugging it for 30 seconds.',
+        'Slow': 'Slow Computer: Check Task Manager (Ctrl+Shift+Esc) for high CPU usage. Disable unnecessary startup apps.',
+        'Beeps': 'Beep Codes: If your PC beeps and wont start, a hardware part is loose. Try reseating your RAM sticks.'
     };
 
-    let posts = JSON.parse(localStorage.getItem('it_posts')) || [];
+    let posts = JSON.parse(localStorage.getItem('it_posts_v2')) || [];
 
     function showTab(tabId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-links span').forEach(s => s.classList.remove('active'));
+        
         document.getElementById(tabId).classList.add('active');
         document.getElementById('nav-' + tabId.split('-')[0]).classList.add('active');
         document.getElementById('detailPanel').style.display = 'none';
@@ -227,7 +275,7 @@
         document.getElementById('detailTitle').innerText = key;
         document.getElementById('detailText').innerText = itData[key];
         panel.style.display = 'block';
-        panel.scrollIntoView({ behavior: 'smooth' });
+        panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     function renderPosts() {
@@ -237,26 +285,21 @@
             const html = `
                 <div class="forum-post">
                     <div class="menu-container">
-                        <button class="dots-btn" onclick="toggleMenu(${index})">⋮</button>
+                        <button class="dots-btn" onclick="toggleMenu(event, ${index})">⋮</button>
                         <div id="menu-${index}" class="dropdown">
                             <button onclick="updateStatus(${index}, 'solved')">✅ Mark Solved</button>
                             <button onclick="updateStatus(${index}, 'pending')">⏳ Mark Pending</button>
-                            <hr style="margin:5px 0; border:0; border-top:1px solid #eee;">
-                            <button onclick="editPost(${index})">✏️ Edit Text</button>
-                            <button onclick="copyPost(${index})">📋 Copy Log</button>
+                            <button onclick="editPost(${index})">✏️ Edit</button>
                             <button style="color:red;" onclick="deletePost(${index})">🗑️ Delete</button>
                         </div>
                     </div>
-                    <div class="post-header">
-                        <div class="user-avatar">${post.dev.charAt(0).toUpperCase()}</div>
-                        <div>
-                            <h4 style="margin:0;">${post.dev}</h4>
-                            <span style="font-size:0.8rem; color:var(--text-muted);">${post.date}</span>
-                        </div>
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <div style="width:35px; height:35px; background:var(--primary); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">${post.dev.charAt(0).toUpperCase()}</div>
+                        <div><strong style="display:block;">${post.dev}</strong><small style="color:var(--text-muted)">${post.date}</small></div>
                     </div>
                     <span class="tag ${post.stat === 'solved' ? 'tag-solved' : 'tag-pending'}">${post.stat}</span>
-                    <div style="font-weight:bold;">${post.iss}</div>
-                    <p style="margin:5px 0 0 0; color:#4b5563;">${post.sol}</p>
+                    <div style="font-weight:bold; margin-top:5px;">${post.iss}</div>
+                    <p style="margin:5px 0 0 0; color:#475569;">${post.sol}</p>
                 </div>
             `;
             area.insertAdjacentHTML('beforeend', html);
@@ -267,17 +310,18 @@
         const dev = document.getElementById('dev').value;
         const iss = document.getElementById('iss').value;
         const sol = document.getElementById('sol').value;
-        if(!dev || !iss) return alert("Please fill in Device and Issue");
+        if(!dev || !iss) return alert("Fill in Device and Issue");
 
         posts.unshift({ dev, iss, sol, stat: 'pending', date: new Date().toLocaleString() });
-        localStorage.setItem('it_posts', JSON.stringify(posts));
+        localStorage.setItem('it_posts_v2', JSON.stringify(posts));
         document.getElementById('dev').value = '';
         document.getElementById('iss').value = '';
         document.getElementById('sol').value = '';
         renderPosts();
     }
 
-    function toggleMenu(index) {
+    function toggleMenu(e, index) {
+        e.stopPropagation(); // Prevents click from bubbling
         const menu = document.getElementById(`menu-${index}`);
         document.querySelectorAll('.dropdown').forEach(d => { if(d !== menu) d.style.display='none'; });
         menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
@@ -285,7 +329,7 @@
 
     function updateStatus(index, newStat) {
         posts[index].stat = newStat;
-        localStorage.setItem('it_posts', JSON.stringify(posts));
+        localStorage.setItem('it_posts_v2', JSON.stringify(posts));
         renderPosts();
     }
 
@@ -293,7 +337,7 @@
         const res = prompt("Update resolution:", posts[index].sol);
         if(res !== null) {
             posts[index].sol = res;
-            localStorage.setItem('it_posts', JSON.stringify(posts));
+            localStorage.setItem('it_posts_v2', JSON.stringify(posts));
             renderPosts();
         }
     }
@@ -301,17 +345,15 @@
     function deletePost(index) {
         if(confirm("Delete this log?")) {
             posts.splice(index, 1);
-            localStorage.setItem('it_posts', JSON.stringify(posts));
+            localStorage.setItem('it_posts_v2', JSON.stringify(posts));
             renderPosts();
         }
     }
 
-    function copyPost(index) {
-        navigator.clipboard.writeText(`${posts[index].dev}: ${posts[index].iss} - ${posts[index].sol}`);
-        alert("Copied!");
-    }
-
-    window.onclick = e => { if(!e.target.matches('.dots-btn')) document.querySelectorAll('.dropdown').forEach(d => d.style.display='none'); }
+    // This closes any open menus if you click anywhere else
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.dropdown').forEach(d => d.style.display='none');
+    });
 
     renderPosts();
 </script>
