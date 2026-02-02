@@ -3,270 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Troubleshooting & Knowledge Hub</title>
+    <title>IT Knowledge & Forum Logs</title>
     <style>
         :root {
             --primary: #4f46e5;
-            --secondary: #64748b;
-            --bg: #f8fafc;
+            --bg: #f3f4f7;
             --card: #ffffff;
-            --text: #1e293b;
-            --danger: #ef4444;
-            --success: #10b981;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
         }
 
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             background-color: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
             margin: 0;
             line-height: 1.6;
         }
 
+        /* Forum Header */
         header {
-            background: #1e293b;
-            padding: 1.5rem;
-            color: white;
-            text-align: center;
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .nav-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .nav-btn {
-            background: #334155;
-            color: white;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 20px;
+        .nav-links { display: flex; gap: 20px; }
+        .nav-links span {
             cursor: pointer;
-            font-weight: 500;
-            transition: 0.3s;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: 0.2s;
         }
+        .nav-links span.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
 
-        .nav-btn.active { background: var(--primary); }
-
-        .container {
-            max-width: 1000px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-
+        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
         .page { display: none; }
         .page.active { display: block; }
 
-        /* Knowledge Base Styling */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-        }
-
-        .card {
-            background: var(--card);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            cursor: pointer;
-            border: 1px solid #e2e8f0;
-            transition: 0.2s;
-        }
-
-        .card:hover { border-color: var(--primary); transform: translateY(-3px); }
-
-        .info-display {
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 12px;
-            border-top: 5px solid var(--primary);
-            margin-top: 25px;
-            display: none;
-            box-shadow: 0 10px 15px rgba(0,0,0,0.05);
-        }
-
-        /* Log Styling */
-        .log-form {
+        /* Forum Post Creator */
+        .post-creator {
             background: white;
             padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 25px;
         }
 
-        .form-group { margin-bottom: 12px; }
         input, textarea, select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #cbd5e1;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
             border-radius: 6px;
-            font-family: inherit;
+            background: #f9fafb;
         }
 
-        .log-entry {
+        .btn-post {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            float: right;
+        }
+
+        /* Forum Feed Item */
+        .forum-post {
             background: white;
-            padding: 15px;
+            border: 1px solid var(--border);
             border-radius: 8px;
             margin-bottom: 15px;
-            border-left: 5px solid var(--secondary);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             position: relative;
+            padding: 20px;
         }
 
-        .log-actions {
-            margin-top: 10px;
-            display: flex;
-            gap: 8px;
-        }
+        .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .user-avatar { width: 40px; height: 40px; background: #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; background: var(--primary); }
+        .post-info h4 { margin: 0; font-size: 1rem; }
+        .post-info span { font-size: 0.8rem; color: var(--text-muted); }
 
-        .action-btn {
-            padding: 5px 10px;
-            font-size: 0.8rem;
-            border-radius: 4px;
+        .post-body { margin-top: 10px; }
+        .tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; }
+        .tag-solved { background: #dcfce7; color: #166534; }
+        .tag-pending { background: #fef9c3; color: #854d0e; }
+
+        /* 3-Dots Menu */
+        .menu-container { position: absolute; top: 15px; right: 15px; }
+        .dots-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 5px;
+        }
+        .dropdown {
+            position: absolute;
+            right: 0;
+            top: 30px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 10;
+            width: 120px;
+        }
+        .dropdown button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            text-align: left;
+            background: none;
             border: none;
             cursor: pointer;
-            color: white;
+            font-size: 0.9rem;
         }
+        .dropdown button:hover { background: #f3f4f6; }
 
-        .btn-edit { background: #f59e0b; }
-        .btn-copy { background: #6366f1; }
-        .btn-del { background: var(--danger); }
-        .btn-save { background: var(--primary); width: 100%; font-weight: bold; margin-top: 10px; }
+        /* Knowledge Base */
+        .kb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .kb-card { background: white; padding: 20px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
+        .kb-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
+        .info-panel { background: #eef2ff; padding: 25px; border-radius: 10px; margin-top: 20px; display: none; border-left: 4px solid var(--primary); }
     </style>
 </head>
 <body>
 
 <header>
-    <h2 style="margin:0;">🛠️ IT Systems Dashboard</h2>
-    <div class="nav-container">
-        <button class="nav-btn active" onclick="switchTab('log-tab')">Repair Logs</button>
-        <button class="nav-btn" onclick="switchTab('hw-tab')">Hardware Encyclopedia</button>
-        <button class="nav-btn" onclick="switchTab('sw-tab')">Software Encyclopedia</button>
+    <h2 style="color: var(--primary); margin:0;">IT Community Hub</h2>
+    <div class="nav-links">
+        <span id="nav-log" class="active" onclick="showTab('log-tab')">Repair Feed</span>
+        <span id="nav-hw" onclick="showTab('hw-tab')">Hardware Wiki</span>
+        <span id="nav-sw" onclick="showTab('sw-tab')">Software Wiki</span>
     </div>
 </header>
 
 <div class="container">
     
     <div id="log-tab" class="page active">
-        <h3>Submit Diagnostic Entry</h3>
-        <div class="log-form">
-            <div class="form-group"><input type="text" id="dev" placeholder="Device (e.g. Acer Aspire 5)"></div>
-            <div class="form-group"><input type="text" id="iss" placeholder="Issue (e.g. No Power)"></div>
-            <div class="form-group"><textarea id="sol" rows="3" placeholder="Troubleshooting/Resolution"></textarea></div>
-            <div class="form-group">
-                <select id="stat">
-                    <option value="solved">✅ Solved</option>
-                    <option value="pending">⏳ Pending</option>
-                    <option value="critical">🚨 Critical</option>
-                </select>
-            </div>
-            <button class="btn-save" onclick="addLog()">Post Log Entry</button>
+        <div class="post-creator">
+            <input type="text" id="dev" placeholder="Device (e.g., MacBook Pro 2021)">
+            <input type="text" id="iss" placeholder="What is the issue?">
+            <textarea id="sol" rows="3" placeholder="Explain the fix or steps taken..."></textarea>
+            <select id="stat">
+                <option value="solved">Status: Solved</option>
+                <option value="pending">Status: Pending</option>
+            </select>
+            <button class="btn-post" onclick="addPost()">Post Log</button>
+            <div style="clear:both;"></div>
         </div>
-        <div id="logArea"></div>
+        <div id="forumArea"></div>
     </div>
 
     <div id="hw-tab" class="page">
-        <h3>Hardware Knowledge Base</h3>
-        <div class="grid">
-            <div class="card" onclick="info('CPU')"><h4>⚡ CPU</h4><p>The Processor</p></div>
-            <div class="card" onclick="info('RAM')"><h4>🧠 RAM</h4><p>Short-term Memory</p></div>
-            <div class="card" onclick="info('GPU')"><h4>🎮 GPU</h4><p>Graphics Processing</p></div>
-            <div class="card" onclick="info('PSU')"><h4>🔌 PSU</h4><p>Power Supply</p></div>
-            <div class="card" onclick="info('COOL')"><h4>❄️ Cooling</h4><p>Fans & Heat Sinks</p></div>
-            <div class="card" onclick="info('MOBO')"><h4>📟 Motherboard</h4><p>Main Circuitry</p></div>
+        <h3>Hardware Components</h3>
+        <div class="kb-grid">
+            <div class="kb-card" onclick="openWiki('CPU')"><strong>CPU</strong><br><small>The Central Processor</small></div>
+            <div class="kb-card" onclick="openWiki('RAM')"><strong>RAM</strong><br><small>Memory Management</small></div>
+            <div class="kb-card" onclick="openWiki('GPU')"><strong>GPU</strong><br><small>Graphics Power</small></div>
+            <div class="kb-card" onclick="openWiki('STORAGE')"><strong>SSD / HDD</strong><br><small>Data Storage</small></div>
         </div>
     </div>
 
     <div id="sw-tab" class="page">
-        <h3>Software Knowledge Base</h3>
-        <div class="grid">
-            <div class="card" onclick="info('OS')"><h4>🖥️ OS</h4><p>Operating Systems</p></div>
-            <div class="card" onclick="info('DRV')"><h4>⚙️ Drivers</h4><p>Hardware Software</p></div>
-            <div class="card" onclick="info('BIOS')"><h4>📟 BIOS</h4><p>System Startup</p></div>
+        <h3>Software Systems</h3>
+        <div class="kb-grid">
+            <div class="kb-card" onclick="openWiki('OS')"><strong>Operating System</strong><br><small>System Logic</small></div>
+            <div class="kb-card" onclick="openWiki('BIOS')"><strong>BIOS / UEFI</strong><br><small>Firmware Startup</small></div>
         </div>
     </div>
 
-    <div id="infoBox" class="info-display">
-        <h2 id="infoTitle"></h2>
+    <div id="infoPanel" class="info-panel">
+        <h2 id="infoTitle" style="margin-top:0;"></h2>
         <p id="infoText"></p>
     </div>
 
 </div>
 
 <script>
-    const lib = {
-        'CPU': 'The Central Processing Unit (CPU) executes instructions. It processes every data point in a computer, from basic mouse clicks to complex 3D math. Without it, the computer cannot "think."',
-        'RAM': 'RAM allows the CPU to access data quickly for active programs. When RAM runs out, the computer uses the much slower storage drive, causing lag.',
-        'GPU': 'The Graphics Processing Unit (GPU) specializes in rendering pixels. While a CPU is a "generalist," the GPU is a specialist designed for high-speed graphics and video processing.',
-        'PSU': 'The Power Supply Unit (PSU) converts high-voltage AC electricity from your wall into the low-voltage DC electricity that sensitive computer parts need. A failing PSU can crash a whole system.',
-        'COOL': 'Cooling systems (Fans, Heat Sinks, Liquid Coolers) prevent hardware from "thermal throttling" or melting. Modern CPUs generate enough heat to boil water; cooling keeps them at safe levels.',
-        'MOBO': 'The Motherboard is the central hub. Every single wire, chip, and component plugs into it so they can share data and electricity.',
-        'OS': 'The Operating System acts as the bridge between you and the hardware. Windows or Linux translates your clicks into electrical signals the CPU understands.',
-        'DRV': 'Drivers are small instruction manuals for the OS. They tell the OS exactly how to talk to a specific piece of hardware like a printer or a new keyboard.',
-        'BIOS': 'BIOS is the firmware that wakes the hardware up. It checks if the RAM and CPU are working before handing control over to the Operating System.'
+    // Data for Wiki
+    const wikiData = {
+        'CPU': 'The Central Processing Unit (CPU) is the brain of the computer. It carries out every instruction of a computer program by performing basic arithmetic, logic, controlling, and input/output operations. Modern processors have multiple cores to handle multitasking efficiently.',
+        'RAM': 'Random Access Memory (RAM) is the "working memory" of a PC. It stores data that the CPU needs in real-time. Unlike storage (SSD), RAM is cleared every time you restart your computer. Having more RAM allows you to open more Chrome tabs and apps without the system freezing.',
+        'GPU': 'The Graphics Processing Unit (GPU) is a specialized processor originally designed to accelerate graphics rendering. It is now essential for high-end gaming, video editing, and AI processing because it can perform thousands of small tasks simultaneously.',
+        'STORAGE': 'Storage devices like SSDs (Solid State Drives) and HDDs (Hard Drives) hold your files permanently. SSDs are much faster because they use flash memory, whereas HDDs use spinning magnetic disks which are prone to physical failure over time.',
+        'OS': 'The Operating System (OS) is the main software that manages hardware and other apps. Whether it is Windows, macOS, or Linux, the OS provides the interface that allows you to click icons and open files without needing to understand machine code.',
+        'BIOS': 'The BIOS (Basic Input/Output System) is the very first program that runs when you power on. It checks if your hardware is healthy and then hands the responsibility to the Operating System to boot up.'
     };
 
-    function switchTab(id) {
-        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).style.display = 'block';
-        event.currentTarget.classList.add('active');
-        document.getElementById('infoBox').style.display = 'none';
+    // Initialize logs from LocalStorage
+    let posts = JSON.parse(localStorage.getItem('it_forum_logs')) || [];
+
+    function showTab(tab) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-links span').forEach(s => s.classList.remove('active'));
+        document.getElementById(tab).classList.add('active');
+        document.getElementById('nav-' + tab.split('-')[0]).classList.add('active');
+        document.getElementById('infoPanel').style.display = 'none';
     }
 
-    function info(key) {
-        const box = document.getElementById('infoBox');
+    function openWiki(key) {
+        const panel = document.getElementById('infoPanel');
         document.getElementById('infoTitle').innerText = key;
-        document.getElementById('infoText').innerText = lib[key];
-        box.style.display = 'block';
-        box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.getElementById('infoText').innerText = wikiData[key];
+        panel.style.display = 'block';
+        panel.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // LOG FUNCTIONS
-    function addLog() {
-        const d = document.getElementById('dev').value;
-        const i = document.getElementById('iss').value;
-        const s = document.getElementById('sol').value;
-        const st = document.getElementById('stat').value;
-
-        if(!d || !i) return alert("Fill in at least Device and Issue.");
-
-        const id = Date.now();
-        const html = `
-            <div class="log-entry" id="log-${id}">
-                <strong>[${st.toUpperCase()}] ${d}</strong><br>
-                <span>Issue: ${i}</span><br>
-                <p id="sol-text-${id}">${s}</p>
-                <div class="log-actions">
-                    <button class="action-btn btn-edit" onclick="editLog(${id})">Edit</button>
-                    <button class="action-btn btn-copy" onclick="copyLog('${i}: ${s}')">Copy</button>
-                    <button class="action-btn btn-del" onclick="document.getElementById('log-${id}').remove()">Delete</button>
+    function renderPosts() {
+        const area = document.getElementById('forumArea');
+        area.innerHTML = '';
+        posts.forEach((post, index) => {
+            const html = `
+                <div class="forum-post">
+                    <div class="menu-container">
+                        <button class="dots-btn" onclick="toggleMenu(${index})">⋮</button>
+                        <div id="menu-${index}" class="dropdown">
+                            <button onclick="editPost(${index})">✏️ Edit</button>
+                            <button onclick="copyPost(${index})">📋 Copy</button>
+                            <button style="color:red;" onclick="deletePost(${index})">🗑️ Delete</button>
+                        </div>
+                    </div>
+                    <div class="post-header">
+                        <div class="user-avatar">${post.dev.charAt(0)}</div>
+                        <div class="post-info">
+                            <h4>User Terminal - ${post.dev}</h4>
+                            <span>Posted on ${post.date}</span>
+                        </div>
+                    </div>
+                    <div class="post-body">
+                        <span class="tag ${post.stat === 'solved' ? 'tag-solved' : 'tag-pending'}">${post.stat}</span>
+                        <div style="font-weight:bold; font-size:1.1rem; margin-bottom:5px;">${post.iss}</div>
+                        <p style="color:#4b5563; margin:0;">${post.sol}</p>
+                    </div>
                 </div>
-            </div>
-        `;
-        document.getElementById('logArea').insertAdjacentHTML('afterbegin', html);
+            `;
+            area.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    function addPost() {
+        const dev = document.getElementById('dev').value;
+        const iss = document.getElementById('iss').value;
+        const sol = document.getElementById('sol').value;
+        const stat = document.getElementById('stat').value;
+
+        if(!dev || !iss) return alert("Please fill in the device and issue.");
+
+        const newPost = { dev, iss, sol, stat, date: new Date().toLocaleString() };
+        posts.unshift(newPost);
+        localStorage.setItem('it_forum_logs', JSON.stringify(posts));
         
-        // Clear
-        ['dev','iss','sol'].forEach(id => document.getElementById(id).value = '');
+        // Reset and show
+        document.getElementById('dev').value = '';
+        document.getElementById('iss').value = '';
+        document.getElementById('sol').value = '';
+        renderPosts();
     }
 
-    function copyLog(text) {
+    function toggleMenu(index) {
+        const menu = document.getElementById(`menu-${index}`);
+        const allMenus = document.querySelectorAll('.dropdown');
+        allMenus.forEach(m => { if(m !== menu) m.style.display = 'none'; });
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function deletePost(index) {
+        posts.splice(index, 1);
+        localStorage.setItem('it_forum_logs', JSON.stringify(posts));
+        renderPosts();
+    }
+
+    function editPost(index) {
+        const newSol = prompt("Update the resolution details:", posts[index].sol);
+        if(newSol !== null) {
+            posts[index].sol = newSol;
+            localStorage.setItem('it_forum_logs', JSON.stringify(posts));
+            renderPosts();
+        }
+    }
+
+    function copyPost(index) {
+        const text = `Device: ${posts[index].dev}\nIssue: ${posts[index].iss}\nResolution: ${posts[index].sol}`;
         navigator.clipboard.writeText(text);
-        alert("Log copied to clipboard!");
+        alert("Post details copied!");
     }
 
-    function editLog(id) {
-        const p = document.getElementById(`sol-text-${id}`);
-        const newText = prompt("Edit resolution:", p.innerText);
-        if(newText !== null) p.innerText = newText;
+    // Close menus when clicking outside
+    window.onclick = function(event) {
+        if (!event.target.matches('.dots-btn')) {
+            document.querySelectorAll('.dropdown').forEach(m => m.style.display = 'none');
+        }
     }
+
+    renderPosts();
 </script>
 
 </body>
