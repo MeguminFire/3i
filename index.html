@@ -39,7 +39,6 @@
             justify-content: center; 
             gap: 15px; 
             margin-top: 10px;
-            flex-wrap: wrap;
         }
 
         .nav-links span {
@@ -48,6 +47,7 @@
             color: var(--text-muted);
             padding: 5px 10px;
             transition: 0.2s;
+            border-bottom: 2px solid transparent;
         }
 
         .nav-links span.active { 
@@ -73,6 +73,14 @@
             margin-bottom: 25px;
         }
 
+        .post-creator label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin: 10px 0 5px 0;
+            color: var(--text-muted);
+        }
+
         input, textarea {
             width: 100%;
             padding: 12px;
@@ -81,6 +89,13 @@
             border-radius: 6px;
             background: #f9fafb;
             font-family: inherit;
+        }
+
+        /* File Upload Styling */
+        input[type="file"] {
+            background: white;
+            padding: 8px;
+            cursor: pointer;
         }
 
         .btn-post {
@@ -92,26 +107,27 @@
             font-weight: bold;
             cursor: pointer;
             width: 100%;
+            margin-top: 10px;
         }
 
-        /* Forum/Log Entry Styling */
+        /* Forum Entry Styling */
         .forum-post {
             background: white;
             border: 1px solid var(--border);
             border-radius: 8px;
             margin-bottom: 15px;
             padding: 20px;
-            position: relative;
         }
 
-        .media-content img, .media-content video, .media-content iframe {
+        .media-content img, .media-content video {
             max-width: 100%;
             border-radius: 6px;
             margin: 10px 0;
             display: block;
+            border: 1px solid var(--border);
         }
 
-        /* Information Grid Styling */
+        /* Info Grid Styling */
         .info-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
@@ -127,33 +143,16 @@
             cursor: pointer; 
             text-align: center; 
             font-weight: 600;
-            transition: 0.2s;
         }
-
-        .info-card:hover { border-color: var(--primary); transform: translateY(-2px); }
 
         .detail-panel { 
             background: #ffffff; 
-            padding: 30px; 
+            padding: 25px; 
             border-radius: 10px; 
             margin-top: 20px; 
             display: none; 
             border-left: 5px solid var(--primary); 
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        .menu-container { position: absolute; top: 15px; right: 15px; }
-        .dots-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
-
-        .dropdown {
-            position: absolute; right: 0; top: 25px; background: white;
-            border: 1px solid var(--border); border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; z-index: 100; width: 140px;
-        }
-
-        .dropdown button {
-            display: block; width: 100%; padding: 10px; text-align: left;
-            background: none; border: none; cursor: pointer; font-size: 0.9rem;
         }
     </style>
 </head>
@@ -173,12 +172,17 @@
     
     <div id="log-tab" class="page active">
         <div class="post-creator">
-            <input type="text" id="dev" placeholder="Device Name...">
-            <input type="text" id="iss" placeholder="Issue/Problem...">
-            <input type="text" id="imgUrl" placeholder="Image URL (Direct link ending in .jpg/.png)">
-            <input type="text" id="vidUrl" placeholder="Video URL (YouTube or .mp4)">
-            <textarea id="sol" rows="3" placeholder="Troubleshooting steps/Resolution..."></textarea>
-            <button class="btn-post" onclick="addPost()">Post Log</button>
+            <input type="text" id="dev" placeholder="Device Name (e.g. My Desktop PC)">
+            <input type="text" id="iss" placeholder="What's the issue?">
+            
+            <label>📷 Upload Image</label>
+            <input type="file" id="fileImg" accept="image/*">
+            
+            <label>🎥 Upload Video</label>
+            <input type="file" id="fileVid" accept="video/*">
+            
+            <textarea id="sol" rows="3" placeholder="Troubleshooting steps..."></textarea>
+            <button class="btn-post" onclick="addPost()">Post to Log</button>
         </div>
         <div id="forumArea"></div>
     </div>
@@ -189,9 +193,7 @@
             <div class="info-card" onclick="openInfo('Motherboard')">📟 Motherboard</div>
             <div class="info-card" onclick="openInfo('CPU')">⚡ CPU</div>
             <div class="info-card" onclick="openInfo('RAM')">🧠 RAM</div>
-            <div class="info-card" onclick="openInfo('GPU')">🎮 GPU</div>
             <div class="info-card" onclick="openInfo('Storage')">💾 Storage</div>
-            <div class="info-card" onclick="openInfo('PSU')">🔌 Power Supply</div>
         </div>
     </div>
 
@@ -199,19 +201,17 @@
         <h3>Software Systems</h3>
         <div class="info-grid">
             <div class="info-card" onclick="openInfo('OS')">🖥️ Operating System</div>
-            <div class="info-card" onclick="openInfo('Kernel')">🧬 Kernel</div>
             <div class="info-card" onclick="openInfo('BIOS')">📟 BIOS / UEFI</div>
             <div class="info-card" onclick="openInfo('Drivers')">⚙️ Device Drivers</div>
         </div>
     </div>
 
     <div id="fix-tab" class="page">
-        <h3>Troubleshooting & Solutions</h3>
+        <h3>Common Solutions</h3>
         <div class="info-grid">
             <div class="info-card" onclick="openInfo('BSOD')">🟦 Blue Screen</div>
             <div class="info-card" onclick="openInfo('NoPower')">🔌 No Power</div>
-            <div class="info-card" onclick="openInfo('Internet')">🌐 No Internet</div>
-            <div class="info-card" onclick="openInfo('Overheat')">🔥 High Temps</div>
+            <div class="info-card" onclick="openInfo('Slow')">🐢 Slow PC</div>
         </div>
     </div>
 
@@ -223,21 +223,87 @@
 
 <script>
     const itData = {
-        'Motherboard': '<p>The central PCB that allows communication between CPU, RAM, and other hardware components.</p>',
-        'CPU': '<p>The brain of the computer that performs calculations and executes instructions.</p>',
-        'RAM': '<p>Volatile memory used to store data that is actively being used for quick access.</p>',
-        'GPU': '<p>Dedicated hardware for rendering graphics and processing parallel data tasks.</p>',
-        'Storage': '<p>Non-volatile devices like SSDs and HDDs that keep data even when powered off.</p>',
-        'PSU': '<p>Converts wall AC power into regulated DC power for internal components.</p>',
-        'OS': '<p>Software that manages hardware resources and provides the user interface.</p>',
-        'Kernel': '<p>The core part of the OS that acts as a bridge between applications and hardware.</p>',
-        'BIOS': '<p>Firmware used to perform hardware initialization during the booting process.</p>',
-        'Drivers': '<p>Specialized software allowing the OS to communicate with specific hardware devices.</p>',
-        'BSOD': '<p>A critical error screen indicating a system crash, often caused by drivers or failing RAM.</p>',
-        'NoPower': '<p>Check PSU switches, cable connections, and perform a CMOS reset if the system is dead.</p>',
-        'Internet': '<p>Troubleshoot by flushing DNS, resetting the router, or checking NIC drivers.</p>',
-        'Overheat': '<p>Usually caused by dust buildup or dried thermal paste. Clean fans and reapply paste.</p>'
+        'Motherboard': 'The main circuit board connecting all components.',
+        'CPU': 'The brain that handles all processing.',
+        'RAM': 'Short-term memory for active tasks.',
+        'Storage': 'Permanent storage for your files.',
+        'OS': 'Software that manages everything on the PC.',
+        'BIOS': 'Basic Input/Output System to start the PC.',
+        'Drivers': 'Instructions for the OS to use hardware.',
+        'BSOD': 'System crash usually caused by hardware or drivers.',
+        'NoPower': 'Check cables, PSU switch, and RAM seating.',
+        'Slow': 'Check Task Manager for heavy background apps.'
     };
 
+    // FIX: Restored working navigation
     function showTab(tabId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-links span').forEach(s => s.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        // This maps 'log-tab' to 'nav-log' to activate the button
+        const navBtnId = 'nav-' + tabId.split('-')[0];
+        document.getElementById(navBtnId).classList.add('active');
+        document.getElementById('detailPanel').style.display = 'none';
+    }
+
+    function openInfo(key) {
+        const panel = document.getElementById('detailPanel');
+        document.getElementById('detailTitle').innerText = key;
+        document.getElementById('detailContent').innerText = itData[key];
+        panel.style.display = 'block';
+    }
+
+    // NEW: Function to handle File Manager uploads
+    async function addPost() {
+        const dev = document.getElementById('dev').value;
+        const iss = document.getElementById('iss').value;
+        const sol = document.getElementById('sol').value;
+        const imgInput = document.getElementById('fileImg');
+        const vidInput = document.getElementById('fileVid');
+
+        if(!dev || !iss) return alert("Please fill in Device and Issue.");
+
+        let mediaHtml = '';
+
+        // Handle Image from Local PC
+        if (imgInput.files && imgInput.files[0]) {
+            const imgData = await toBase64(imgInput.files[0]);
+            mediaHtml += `<img src="${imgData}">`;
+        }
+
+        // Handle Video from Local PC
+        if (vidInput.files && vidInput.files[0]) {
+            const vidData = await toBase64(vidInput.files[0]);
+            mediaHtml += `<video controls><source src="${vidData}"></video>`;
+        }
+
+        const logHtml = `
+            <div class="forum-post">
+                <strong>${dev}</strong> - <small>${new Date().toLocaleString()}</small>
+                <p><strong>Issue:</strong> ${iss}</p>
+                <div class="media-content">${mediaHtml}</div>
+                <p style="white-space: pre-wrap;">${sol}</p>
+            </div>
+        `;
+
+        document.getElementById('forumArea').insertAdjacentHTML('afterbegin', logHtml);
+        
+        // Reset form
+        document.getElementById('dev').value = '';
+        document.getElementById('iss').value = '';
+        document.getElementById('sol').value = '';
+        imgInput.value = '';
+        vidInput.value = '';
+    }
+
+    // Helper: Converts local files to displayable browser data
+    const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+</script>
+</body>
+</html>
