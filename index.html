@@ -56,7 +56,7 @@
         }
 
         .container { 
-            max-width: 800px; 
+            max-width: 900px; 
             margin: 20px auto; 
             padding: 0 15px;
         }
@@ -70,14 +70,6 @@
             border-radius: 8px;
             border: 1px solid var(--border);
             margin-bottom: 25px;
-        }
-
-        .post-creator label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: bold;
-            margin: 10px 0 5px 0;
-            color: var(--text-muted);
         }
 
         input, textarea {
@@ -99,7 +91,6 @@
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            margin-top: 10px;
         }
 
         .forum-post {
@@ -117,7 +108,7 @@
         .dropdown {
             position: absolute; right: 0; top: 25px; background: white;
             border: 1px solid var(--border); border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; z-index: 100; width: 150px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; z-index: 100; width: 140px;
         }
 
         .dropdown button {
@@ -125,17 +116,9 @@
             background: none; border: none; cursor: pointer; font-size: 0.9rem;
         }
 
-        .media-content img, .media-content video {
-            max-width: 100%;
-            border-radius: 6px;
-            margin: 10px 0;
-            display: block;
-            border: 1px solid var(--border);
-        }
-
         .info-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
             gap: 15px; 
             margin-top: 15px;
         }
@@ -148,16 +131,24 @@
             cursor: pointer; 
             text-align: center; 
             font-weight: 600;
+            transition: 0.2s;
         }
+
+        .info-card:hover { border-color: var(--primary); transform: translateY(-3px); }
 
         .detail-panel { 
             background: #ffffff; 
-            padding: 25px; 
+            padding: 35px; 
             border-radius: 10px; 
-            margin-top: 20px; 
+            margin-top: 25px; 
             display: none; 
-            border-left: 5px solid var(--primary); 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-left: 8px solid var(--primary); 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        .detail-content p {
+            margin-bottom: 1.2rem;
+            color: #334155;
         }
     </style>
 </head>
@@ -177,14 +168,10 @@
     
     <div id="log-tab" class="page active">
         <div class="post-creator">
-            <input type="text" id="dev" placeholder="Device Name...">
-            <input type="text" id="iss" placeholder="Issue/Problem...">
-            <label>📷 Upload Image</label>
-            <input type="file" id="fileImg" accept="image/*">
-            <label>🎥 Upload Video</label>
-            <input type="file" id="fileVid" accept="video/*">
-            <textarea id="sol" rows="3" placeholder="Troubleshooting steps..."></textarea>
-            <button class="btn-post" onclick="handleAddPost()">Post to Log</button>
+            <input type="text" id="dev" placeholder="Device Name (e.g., Office Laptop)">
+            <input type="text" id="iss" placeholder="Issue (e.g., Wifi dropping)">
+            <textarea id="sol" rows="3" placeholder="Troubleshooting steps taken..."></textarea>
+            <button class="btn-post" onclick="addPost()">Post Log</button>
         </div>
         <div id="forumArea"></div>
     </div>
@@ -193,174 +180,152 @@
         <h3>Hardware Knowledge Base</h3>
         <div class="info-grid">
             <div class="info-card" onclick="openInfo('Motherboard')">📟 Motherboard</div>
-            <div class="info-card" onclick="openInfo('CPU')">⚡ CPU</div>
-            <div class="info-card" onclick="openInfo('RAM')">🧠 RAM</div>
-            <div class="info-card" onclick="openInfo('Storage')">💾 Storage</div>
+            <div class="info-card" onclick="openInfo('CPU')">⚡ CPU (Processor)</div>
+            <div class="info-card" onclick="openInfo('RAM')">🧠 RAM (Memory)</div>
+            <div class="info-card" onclick="openInfo('Storage')">💾 SSD / HDD</div>
+            <div class="info-card" onclick="openInfo('GPU')">🎮 Graphics Card</div>
+            <div class="info-card" onclick="openInfo('PSU')">🔌 Power Supply</div>
         </div>
     </div>
 
     <div id="sw-tab" class="page">
-        <h3>Software Systems</h3>
+        <h3>Software & OS Architecture</h3>
         <div class="info-grid">
+            <div class="info-card" onclick="openInfo('Kernel')">🧬 System Kernel</div>
             <div class="info-card" onclick="openInfo('OS')">🖥️ Operating System</div>
             <div class="info-card" onclick="openInfo('BIOS')">📟 BIOS / UEFI</div>
             <div class="info-card" onclick="openInfo('Drivers')">⚙️ Device Drivers</div>
+            <div class="info-card" onclick="openInfo('FileSys')">📂 File Systems</div>
         </div>
     </div>
 
     <div id="fix-tab" class="page">
-        <h3>Common Solutions</h3>
+        <h3>Deep Troubleshooting Guides</h3>
         <div class="info-grid">
-            <div class="info-card" onclick="openInfo('BSOD')">🟦 Blue Screen</div>
-            <div class="info-card" onclick="openInfo('NoPower')">🔌 No Power</div>
-            <div class="info-card" onclick="openInfo('Overheat')">🔥 Overheating</div>
+            <div class="info-card" onclick="openInfo('BSOD')">🟦 Blue Screen (BSOD)</div>
+            <div class="info-card" onclick="openInfo('BootLoop')">🔄 Boot Loops</div>
+            <div class="info-card" onclick="openInfo('Overheat')">🔥 Thermal Throttling</div>
+            <div class="info-card" onclick="openInfo('Artifact')">📺 GPU Artifacting</div>
         </div>
     </div>
 
     <div id="detailPanel" class="detail-panel">
-        <h2 id="detailTitle"></h2>
-        <div id="detailContent"></div>
+        <h2 id="detailTitle" style="color: var(--primary); margin-top:0;"></h2>
+        <div id="detailContent" class="detail-content"></div>
     </div>
 </div>
 
 <script>
     const itData = {
-        'Motherboard': 'The Motherboard is the central printed circuit board that connects all computer components. It houses the CPU socket, RAM slots, and provides the electrical paths (buses) for data to travel between devices.',
-        'CPU': 'The Central Processing Unit (CPU) is the brain of the computer. It executes instructions, performs mathematical calculations, and manages data flow between software and hardware.',
-        'RAM': 'Random Access Memory (RAM) is high-speed temporary storage. It holds data that the CPU needs immediately. It is volatile, meaning data is lost when the power is turned off.',
-        'Storage': 'Storage devices (SSDs and HDDs) keep your data permanently. SSDs are much faster because they use flash memory, while HDDs use spinning magnetic platters.',
-        'OS': 'The Operating System (OS) is software that manages hardware and software resources. It handles memory, files, and provides the user interface you interact with.',
-        'BIOS': 'The BIOS/UEFI is the firmware that runs when you turn on the computer. It initializes hardware components and hands off control to the Operating System.',
-        'Drivers': 'Device Drivers are specialized software that allow the Operating System to communicate with hardware like printers, graphics cards, and network adapters.',
-        'BSOD': 'A Blue Screen of Death indicates a critical system error. It is usually caused by failing hardware (like RAM) or corrupt drivers. Check the stop code for specific clues.',
-        'NoPower': 'If a PC won’t turn on, check the power cable and the switch on the back of the PSU. If fans spin but there is no display, try "reseating" the RAM sticks.',
-        'Overheat': 'Overheating is often caused by dust in the fans or old thermal paste. Use compressed air to clean out the case and ensure there is proper airflow.'
+        'Motherboard': `
+            <p>The Motherboard, often called the "Mainboard," is the foundational Printed Circuit Board (PCB) of any computing system. It acts as the central hub through which every single component communicates, from the massive CPU to the smallest USB peripheral. Without a motherboard, there is no system.</p>
+            <p>Technically, it houses the chipset, which dictates how data flows between the CPU, memory, and expansion slots. It also contains the VRM (Voltage Regulator Modules) which convert power from the PSU into the specific, stable voltages required by sensitive electronics. High-end boards feature multiple layers of copper to handle complex signal routing without interference.</p>
+            <p>On a modern board, you will find several key interfaces: the CPU socket (LGA or PGA), DIMM slots for RAM, PCIe slots for graphics cards, and SATA or M.2 ports for storage. It also holds the CMOS battery, which keeps the system clock and BIOS settings active even when the PC is unplugged.</p>
+        `,
+        'CPU': `
+            <p>The Central Processing Unit (CPU) is frequently described as the "brain" of the computer. Its primary job is to execute a sequence of stored instructions called a program. This is done through the Fetch-Decode-Execute cycle, occurring billions of times per second.</p>
+            <p>Modern CPUs are composed of billions of microscopic transistors etched onto a silicon die. They are divided into "Cores," which are essentially independent processors that can work on different tasks simultaneously. "Threads" allow a single core to manage two tasks at once, significantly increasing efficiency in multi-tasking environments like video editing or gaming.</p>
+            <p>Performance is often measured by Clock Speed (Gigahertz) and IPC (Instructions Per Clock). However, the "Cache" (L1, L2, and L3) is equally vital; it is ultra-fast memory built directly into the CPU chip that stores frequently used data to prevent the CPU from having to wait for the slower RAM.</p>
+        `,
+        'Kernel': `
+            <p>The Kernel is the absolute core of an Operating System. It is the first program loaded on start-up (after the Bootloader) and handles the rest of the start-up as well as input/output requests from software. It acts as a bridge between applications and the actual data processing performed at the hardware level.</p>
+            <p>There are different types of kernels, most notably Monolithic (where all OS services run in kernel space) and Microkernels (where only the essentials run in kernel space). Linux uses a Monolithic kernel, while macOS uses a hybrid called XNU. Its primary responsibilities include Memory Management, Process Management, and Device Management.</p>
+            <p>The kernel is highly protected; it operates in "Kernel Mode," which has unrestricted access to all hardware. Regular apps run in "User Mode" and must ask the kernel for permission to use the CPU or save a file. This prevents a single app crash from taking down the entire physical machine.</p>
+        `,
+        'BSOD': `
+            <p>The Blue Screen of Death (BSOD) is officially known as a "Stop Error." It occurs when the Windows Operating System encounters a critical issue that it cannot safely recover from. Rather than continuing and potentially corrupting your files or damaging hardware, the system halts everything and displays a diagnostic code.</p>
+            <p>The most common causes are faulty hardware, specifically failing RAM or a dying Hard Drive, or "Kernel-mode" software errors, such as a corrupted Device Driver. When a driver tries to access a memory address it doesn't own, the kernel triggers a BSOD to protect the system integrity.</p>
+            <p>To fix a BSOD, one should look at the "Stop Code" provided (e.g., IRQL_NOT_LESS_OR_EQUAL). Troubleshooting usually involves booting into Safe Mode, updating drivers, running the 'sfc /scannow' command to fix system files, or using a MemTest86 tool to check for physical damage to the RAM sticks.</p>
+        `,
+        'RAM': `<p>RAM (Random Access Memory) is the system's short-term memory. Unlike a hard drive, it is volatile, meaning all data is erased when power is lost. Its speed allows the CPU to fetch data in nanoseconds rather than milliseconds.</p><p>When you open an application, the files are copied from your slow storage into the fast RAM. If you don't have enough RAM, the OS uses "Page Filing," which swaps data back to the slow storage, causing the computer to lag or stutter.</p>`,
+        'Storage': `<p>Storage consists of SSDs (Solid State Drives) and HDDs (Hard Disk Drives). SSDs use NAND flash memory and have no moving parts, making them incredibly fast. HDDs use magnetic platters and a physical "read head," making them slower but cheaper for large amounts of data.</p>`,
+        'GPU': `<p>The Graphics Processing Unit (GPU) is designed for parallel processing. While a CPU has a few powerful cores, a GPU has thousands of smaller cores designed to calculate the math for pixels and 3D geometry simultaneously.</p>`,
+        'PSU': `<p>The Power Supply Unit (PSU) is the most critical safety component. It converts high-voltage AC from your wall into low-voltage DC (3.3V, 5V, and 12V) that the PC components can handle. A poor-quality PSU can explode or fry your motherboard.</p>`,
+        'OS': `<p>The Operating System is the interface between the user and the hardware. It manages the file system, coordinates which apps get to use the CPU, and provides the drivers that allow the mouse, keyboard, and monitor to work together.</p>`,
+        'BIOS': `<p>BIOS (Basic Input/Output System) or UEFI is the firmware stored on a chip on the motherboard. It performs the POST (Power On Self Test) to ensure all hardware is working before it hands off control to the Operating System.</p>`,
+        'Drivers': `<p>Drivers are translators. A graphics card speaks a "hardware language," and Windows speaks a "software language." The driver sits in the middle and translates the instructions so they can understand each other.</p>`,
+        'FileSys': `<p>File Systems (like NTFS, FAT32, or APFS) determine how data is stored and retrieved. Without a file system, information placed in a storage medium would be one large body of data with no way to tell where one piece stops and the next begins.</p>`,
+        'BootLoop': `<p>A Boot Loop happens when a PC starts, hits an error, and restarts immediately, creating a cycle. This is often caused by a bad BIOS update, a failing CMOS battery, or a Windows Update that corrupted the boot sector.</p>`,
+        'Overheat': `<p>Overheating occurs when heat isn't removed from the CPU or GPU fast enough. Components will "Throttled" (slow down) to save themselves. Common fixes include cleaning dust from fans and reapplying thermal paste.</p>`,
+        'Artifact': `<p>GPU Artifacting looks like weird lines, blocks, or flickering colors on your screen. This is a sign that the graphics card memory is failing or the card is getting too hot. It usually indicates the hardware is dying.</p>`
     };
 
-    let localPosts = [];
+    let posts = JSON.parse(localStorage.getItem('it_hub_logs')) || [];
 
     function showTab(tabId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-links span').forEach(s => s.classList.remove('active'));
-        
-        const page = document.getElementById(tabId);
-        if(page) page.classList.add('active');
-        
-        const navId = 'nav-' + tabId.split('-')[0];
-        const nav = document.getElementById(navId);
-        if(nav) nav.classList.add('active');
-        
+        document.getElementById(tabId).classList.add('active');
+        document.getElementById('nav-' + tabId.split('-')[0]).classList.add('active');
         document.getElementById('detailPanel').style.display = 'none';
     }
 
     function openInfo(key) {
         const panel = document.getElementById('detailPanel');
-        const title = document.getElementById('detailTitle');
-        const content = document.getElementById('detailContent');
-        
-        title.innerText = key;
-        content.innerText = itData[key] || "Information coming soon.";
+        document.getElementById('detailTitle').innerText = key;
+        document.getElementById('detailContent').innerHTML = itData[key] || "Coming soon...";
         panel.style.display = 'block';
         panel.scrollIntoView({ behavior: 'smooth' });
     }
 
-    const toBase64 = file => new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
-
-    async function handleAddPost() {
+    function addPost() {
         const dev = document.getElementById('dev').value;
         const iss = document.getElementById('iss').value;
         const sol = document.getElementById('sol').value;
-        const imgInput = document.getElementById('fileImg');
-        const vidInput = document.getElementById('fileVid');
+        if(!dev || !iss) return alert("Fill in Device and Issue");
 
-        if(!dev || !iss) return alert("Please fill in at least the device and the issue.");
+        const post = { id: Date.now(), dev, iss, sol, date: new Date().toLocaleString() };
+        posts.unshift(post);
+        save();
+        render();
 
-        let imgData = "";
-        let vidData = "";
-
-        if (imgInput.files && imgInput.files[0]) {
-            imgData = await toBase64(imgInput.files[0]);
-        }
-        if (vidInput.files && vidInput.files[0]) {
-            vidData = await toBase64(vidInput.files[0]);
-        }
-
-        const newPost = {
-            id: Date.now(),
-            dev, iss, sol, imgData, vidData,
-            date: new Date().toLocaleString()
-        };
-
-        localPosts.unshift(newPost);
-        renderPosts();
-
-        // Reset
         document.getElementById('dev').value = '';
         document.getElementById('iss').value = '';
         document.getElementById('sol').value = '';
-        imgInput.value = '';
-        vidInput.value = '';
     }
 
-    function renderPosts() {
+    function render() {
         const area = document.getElementById('forumArea');
         area.innerHTML = '';
-        
-        localPosts.forEach((post, index) => {
-            const html = `
+        posts.forEach((p, i) => {
+            area.innerHTML += `
                 <div class="forum-post">
                     <div class="menu-container">
-                        <button class="dots-btn" onclick="toggleMenu(event, ${index})">⋮</button>
-                        <div id="menu-${index}" class="dropdown">
-                            <button onclick="editPost(${index})">✏️ Edit Text</button>
-                            <button style="color:red;" onclick="deletePost(${index})">🗑️ Delete</button>
+                        <button class="dots-btn" onclick="toggleMenu(event, ${i})">⋮</button>
+                        <div id="menu-${i}" class="dropdown">
+                            <button onclick="editPost(${i})">✏️ Edit</button>
+                            <button style="color:red;" onclick="deletePost(${i})">🗑️ Delete</button>
                         </div>
                     </div>
-                    <strong>${post.dev}</strong> - <small>${post.date}</small>
-                    <p><strong>Issue:</strong> ${post.iss}</p>
-                    <div class="media-content">
-                        ${post.imgData ? `<img src="${post.imgData}">` : ''}
-                        ${post.vidData ? `<video controls src="${post.vidData}"></video>` : ''}
-                    </div>
-                    <p style="white-space: pre-wrap;">${post.sol}</p>
+                    <strong>${p.dev}</strong> - <small>${p.date}</small>
+                    <p><strong>Issue:</strong> ${p.iss}</p>
+                    <p style="white-space: pre-wrap;">${p.sol}</p>
                 </div>
             `;
-            area.insertAdjacentHTML('beforeend', html);
         });
     }
 
-    function toggleMenu(e, index) {
+    function toggleMenu(e, i) {
         e.stopPropagation();
-        const menu = document.getElementById(`menu-${index}`);
-        document.querySelectorAll('.dropdown').forEach(d => {
-            if(d !== menu) d.style.display = 'none';
-        });
-        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    }
-
-    function deletePost(index) {
-        if(confirm("Delete this log?")) {
-            localPosts.splice(index, 1);
-            renderPosts();
-        }
-    }
-
-    function editPost(index) {
-        const newSol = prompt("Edit Troubleshooting Steps:", localPosts[index].sol);
-        if(newSol !== null) {
-            localPosts[index].sol = newSol;
-            renderPosts();
-        }
-    }
-
-    document.addEventListener('click', () => {
+        const menu = document.getElementById(`menu-${i}`);
         document.querySelectorAll('.dropdown').forEach(d => d.style.display = 'none');
-    });
+        menu.style.display = 'block';
+    }
+
+    function deletePost(i) {
+        if(confirm("Delete log?")) { posts.splice(i, 1); save(); render(); }
+    }
+
+    function editPost(i) {
+        const val = prompt("Edit steps:", posts[i].sol);
+        if(val !== null) { posts[i].sol = val; save(); render(); }
+    }
+
+    function save() { localStorage.setItem('it_hub_logs', JSON.stringify(posts)); }
+    
+    document.addEventListener('click', () => document.querySelectorAll('.dropdown').forEach(d => d.style.display='none'));
+    render();
 </script>
+
 </body>
 </html>
