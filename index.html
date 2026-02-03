@@ -3,239 +3,378 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Troubleshooting Assistant</title>
+    <title>IT Troubleshooting Hub</title>
     <style>
         :root {
-            --primary: #2563eb;
-            --bg: #f3f4f6;
-            --card-bg: #ffffff;
-            --text: #1f2937;
+            --primary: #4f46e5;
+            --bg: #f3f4f7;
+            --card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
         }
+
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, sans-serif;
             background-color: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
             line-height: 1.6;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
+            overflow-x: hidden;
         }
 
         header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem;
             text-align: center;
-            margin-bottom: 30px;
+            position: relative;
+            z-index: 10;
         }
 
-        /* Restored Input Section Styling */
-        .editor-panel {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+        .nav-links { 
+            display: flex; 
+            justify-content: center; 
+            gap: 15px; 
+            margin-top: 10px;
+            flex-wrap: wrap;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #4b5563;
-        }
-
-        input[type="text"], textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-family: inherit;
-            box-sizing: border-box;
-        }
-
-        textarea {
-            height: 80px;
-            resize: vertical;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
+        .nav-links span {
             cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
+            font-weight: 600;
+            color: var(--text-muted);
+            padding: 5px 10px;
+            transition: 0.2s;
         }
 
-        .btn-add {
-            background-color: var(--primary);
-            color: white;
-            flex: 2;
+        .nav-links span.active { 
+            color: var(--primary); 
+            border-bottom: 2px solid var(--primary); 
         }
 
-        .btn-add:hover { background-color: #1d4ed8; }
-
-        .btn-print {
-            background-color: #4b5563;
-            color: white;
-            flex: 1;
+        .container { 
+            max-width: 800px; 
+            margin: 20px auto; 
+            padding: 0 15px;
+            position: relative;
         }
 
-        /* Log Output Styling */
-        .log-container h2 {
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 10px;
-        }
+        .page { display: none; }
+        .page.active { display: block; }
 
-        .log-entry {
-            background: var(--card-bg);
-            border-left: 5px solid var(--primary);
+        .post-creator {
+            background: white;
             padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 25px;
         }
 
-        .log-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9em;
-            color: #6b7280;
+        input, textarea {
+            width: 100%;
+            padding: 12px;
             margin-bottom: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: #f9fafb;
         }
 
-        .log-section {
-            margin-bottom: 8px;
+        .btn-post {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
         }
 
-        .log-section strong {
-            color: var(--primary);
+        .forum-post {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            position: relative;
+            padding: 20px;
         }
 
-        @media print {
-            .editor-panel, .btn-group { display: none; }
-            body { background-color: white; }
-            .log-entry { break-inside: avoid; border: 1px solid #ddd; }
+        .tag { 
+            display: inline-block; 
+            padding: 2px 10px; 
+            border-radius: 12px; 
+            font-size: 0.75rem; 
+            font-weight: bold; 
+            margin-bottom: 8px; 
+        }
+        .tag-solved { background: #dcfce7; color: #166534; }
+        .tag-pending { background: #fef9c3; color: #854d0e; }
+
+        .menu-container { position: absolute; top: 15px; right: 15px; }
+        .dots-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); line-height: 1; }
+
+        .dropdown {
+            position: absolute;
+            right: 0;
+            top: 25px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+            z-index: 100;
+            width: 150px;
+        }
+
+        .dropdown button {
+            display: block; width: 100%; padding: 10px; text-align: left;
+            background: none; border: none; cursor: pointer; font-size: 0.9rem;
+        }
+        .dropdown button:hover { background: #f3f4f6; }
+
+        .info-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+            gap: 15px; 
+            margin-top: 15px;
+        }
+
+        .info-card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            cursor: pointer; 
+            text-align: center; 
+            font-weight: 600;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .info-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+
+        .detail-panel { 
+            background: #ffffff; 
+            padding: 30px; 
+            border-radius: 10px; 
+            margin-top: 20px; 
+            display: none; 
+            border-left: 5px solid var(--primary); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>💻 Diagnostic & Repair Log</h1>
-        <p>Real-time collaborative logs. Visible to all users.</p>
-    </header>
+<header>
+    <h2 style="color: var(--primary); margin:0;">IT Systems Hub</h2>
+    <div class="nav-links">
+        <span id="nav-log" class="active" onclick="showTab('log-tab')">Logs</span>
+        <span id="nav-hw" onclick="showTab('hw-tab')">Hardware</span>
+        <span id="nav-sw" onclick="showTab('sw-tab')">Software</span>
+        <span id="nav-fix" onclick="showTab('fix-tab')">Troubleshooting</span>
+    </div>
+</header>
 
-    <div class="editor-panel">
-        <div class="form-group">
-            <label for="device">Device / System Name</label>
-            <input type="text" id="device" placeholder="e.g., Dell XPS 15">
+<div class="container">
+    
+    <div id="log-tab" class="page active">
+        <div class="post-creator">
+            <input type="text" id="dev" placeholder="Device Name...">
+            <input type="text" id="iss" placeholder="What is the issue?">
+            <textarea id="sol" rows="3" placeholder="Troubleshooting steps or resolution..."></textarea>
+            <button class="btn-post" onclick="addPost()">Post Log</button>
+            <div style="clear:both;"></div>
         </div>
-        <div class="form-group">
-            <label for="issue">Symptom / Problem</label>
-            <input type="text" id="issue" placeholder="e.g., Blue Screen of Death">
-        </div>
-        <div class="form-group">
-            <label for="steps">Troubleshooting Steps Taken</label>
-            <textarea id="steps" placeholder="1. Checked drivers..."></textarea>
-        </div>
-        <div class="form-group">
-            <label for="solution">Resolution / Final Notes</label>
-            <textarea id="solution" placeholder="Replaced RAM stick."></textarea>
-        </div>
-        <div class="btn-group">
-            <button class="btn-add" id="submitBtn">Add to Live Log</button>
-            <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
+        <div id="forumArea"></div>
+    </div>
+
+    <div id="hw-tab" class="page">
+        <h3>Hardware Knowledge Base</h3>
+        <p>Comprehensive technical details for every physical system component.</p>
+        <div class="info-grid">
+            <div class="info-card" onclick="openInfo('Motherboard')">📟 Motherboard</div>
+            <div class="info-card" onclick="openInfo('CPU')">⚡ CPU</div>
+            <div class="info-card" onclick="openInfo('RAM')">🧠 RAM</div>
+            <div class="info-card" onclick="openInfo('GPU')">🎮 GPU</div>
+            <div class="info-card" onclick="openInfo('Storage')">💾 Storage (SSD/HDD)</div>
+            <div class="info-card" onclick="openInfo('PSU')">🔌 Power Supply</div>
+            <div class="info-card" onclick="openInfo('Cooling')">❄️ Cooling Systems</div>
+            <div class="info-card" onclick="openInfo('Optical')">💿 Optical Drives</div>
+            <div class="info-card" onclick="openInfo('NIC')">🌐 Network Card</div>
+            <div class="info-card" onclick="openInfo('Peripherals')">🖱️ Peripherals</div>
         </div>
     </div>
 
-    <div class="log-container">
-        <h2>Global Session History</h2>
-        <div id="logsArea"></div>
+    <div id="sw-tab" class="page">
+        <h3>Software Systems</h3>
+        <p>In-depth explanations of the logic layers governing computer operations.</p>
+        <div class="info-grid">
+            <div class="info-card" onclick="openInfo('OS')">🖥️ Operating System</div>
+            <div class="info-card" onclick="openInfo('Kernel')">🧬 Kernel</div>
+            <div class="info-card" onclick="openInfo('BIOS')">📟 BIOS / UEFI</div>
+            <div class="info-card" onclick="openInfo('Drivers')">⚙️ Device Drivers</div>
+            <div class="info-card" onclick="openInfo('FileSys')">📂 File Systems</div>
+            <div class="info-card" onclick="openInfo('Firmware')">🛠️ Firmware</div>
+            <div class="info-card" onclick="openInfo('Registry')">📝 Registry / Config</div>
+            <div class="info-card" onclick="openInfo('Virtual')">☁️ Virtualization</div>
+        </div>
+    </div>
+
+    <div id="fix-tab" class="page">
+        <h3>Troubleshooting & Solutions</h3>
+        <p>Common issues with detailed, paragraph-based repair procedures.</p>
+        <div class="info-grid">
+            <div class="info-card" onclick="openInfo('BSOD')">🟦 Blue Screen</div>
+            <div class="info-card" onclick="openInfo('NoPower')">🔌 No Power / Boot</div>
+            <div class="info-card" onclick="openInfo('Slow')">🐢 Sluggish System</div>
+            <div class="info-card" onclick="openInfo('Internet')">🌐 No Internet</div>
+            <div class="info-card" onclick="openInfo('Audio')">🔇 No Sound</div>
+            <div class="info-card" onclick="openInfo('Overheat')">🔥 High Temps</div>
+            <div class="info-card" onclick="openInfo('Artifacts')">📺 Visual Glitches</div>
+            <div class="info-card" onclick="openInfo('UpdateFail')">🔄 Update Failed</div>
+        </div>
+    </div>
+
+    <div id="detailPanel" class="detail-panel">
+        <h2 id="detailTitle" style="margin:0 0 10px 0;"></h2>
+        <div id="detailContent"></div>
     </div>
 </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+<script>
+    const itData = {
+        // HARDWARE
+        'Motherboard': '<p>The Motherboard is the central nervous system of the computer. It is a complex multilayered PCB (Printed Circuit Board) that houses the CPU socket, RAM slots, and various controllers. It coordinates data flow via the "Chipset" and provides power distribution from the PSU to every connected component. Without the motherboard, the various parts of the computer would have no way to communicate or receive electrical power.</p>',
+        'CPU': '<p>The Central Processing Unit (CPU) executes every instruction in a computing system. It follows a "Fetch-Decode-Execute" cycle. Modern CPUs contain billions of transistors and multiple cores, allowing them to process millions of tasks simultaneously. It relies heavily on the "Control Unit" to direct data and the "ALU" (Arithmetic Logic Unit) to perform the actual math required for software to function.</p>',
+        'RAM': '<p>Random Access Memory (RAM) is high-speed, volatile storage used for data currently in use. When you open a program, the OS moves data from your slow storage (SSD) into the fast RAM so the CPU can access it instantly. Because it is volatile, all data is lost when power is cut. Insufficient RAM leads to "swapping," where the computer uses the slow hard drive as memory, causing extreme lag.</p>',
+        'GPU': '<p>The Graphics Processing Unit (GPU) is specialized for rendering images and video. While a CPU is built for general logic, a GPU is built with thousands of cores designed for parallel math. This makes them perfect for 3D gaming, professional video editing, and AI machine learning. High-end GPUs include their own dedicated VRAM (Video RAM) to store complex 3D textures.</p>',
+        'Storage': '<p>Storage refers to non-volatile devices like SSDs (Solid State Drives) and HDDs (Hard Disk Drives). SSDs use flash memory and have no moving parts, making them nearly 100x faster than traditional HDDs. Most modern systems use NVMe M.2 SSDs which plug directly into the motherboard\'s high-speed PCIe lanes for maximum boot and load speeds.</p>',
+        'PSU': '<p>The Power Supply Unit (PSU) converts high-voltage AC current from your wall outlet into the low-voltage DC current (12V, 5V, 3.3V) that computer parts require. It is the most critical safety component; a failing PSU can send a surge of electricity that destroys the Motherboard and CPU instantly. They are rated by efficiency (80 Plus Bronze/Gold/Platinum).</p>',
+        'Cooling': '<p>Cooling systems prevent hardware from "Thermal Throttling," which is when a part slows down to prevent heat damage. Air cooling uses metal heat sinks and fans to dissipate heat. Liquid cooling (AIOs) uses a pump and water-blocks to move heat to a radiator. Proper "Case Airflow" (using intake and exhaust fans) is vital to keep the ambient temperature inside the computer low.</p>',
+        'Optical': '<p>Optical Drives (CD/DVD/Blu-ray) use laser light to read or write data onto discs. While they are becoming rare in modern desktop builds, they are still used for physical media backups, legacy software installation, and high-fidelity movie playback. They connect via SATA cables to the motherboard.</p>',
+        'NIC': '<p>The Network Interface Controller (NIC) manages your connection to the internet or local network. Most motherboards have a built-in Ethernet NIC, while others include a Wi-Fi NIC with antennas. It translates digital data into the electrical signals (for Ethernet) or radio waves (for Wi-Fi) required for networking.</p>',
+        'Peripherals': '<p>Peripherals are external devices that allow you to interact with the system. This includes Input devices (Keyboard, Mouse, Microphone) and Output devices (Monitor, Speakers, Printer). Most modern peripherals connect via USB (Universal Serial Bus), which provides both data transfer and power to the device.</p>',
 
-    // PASTE YOUR CONFIG FROM FIREBASE HERE
-    const firebaseConfig = {
-      apiKey: "PASTE_HERE",
-      authDomain: "it-troubl.firebaseapp.com",
-      databaseURL: "https://it-troubl-default-rtdb.firebaseio.com",
-      projectId: "it-troubl",
-      storageBucket: "it-troubl.appspot.com",
-      messagingSenderId: "PASTE_HERE",
-      appId: "PASTE_HERE"
+        // SOFTWARE
+        'OS': '<p>The Operating System (OS) is the master software that manages hardware and other apps. It provides the "User Interface" (UI), handles memory management, and schedules tasks for the CPU. Popular examples include Windows (for general use), macOS (for creative work), and Linux (for servers and developers).</p>',
+        'Kernel': '<p>The Kernel is the heart of the Operating System. It is the invisible layer that sits between the hardware and the software. When a program wants to save a file or use the internet, it sends a request to the Kernel, which then talks directly to the hardware. It is the most sensitive and important part of any computer system.</p>',
+        'BIOS': '<p>The BIOS (or UEFI) is firmware stored on a small chip on the motherboard. It is the first thing that runs when you hit power. It performs a "POST" (Power-On Self-Test) to ensure the RAM and CPU are working before it looks for the Operating System on your hard drive to start the boot process.</p>',
+        'Drivers': '<p>Drivers are small instruction manuals for the OS. They tell the Operating System exactly how to use a specific piece of hardware. For example, a printer won\'t work unless you have the specific driver that tells Windows how to "talk" to that specific printer model.</p>',
+        'FileSys': '<p>The File System (NTFS, FAT32, APFS) is the "filing cabinet" logic of your hard drive. It determines how data is named, stored, and organized. Without a file system, your hard drive would just be a pile of billions of bits, and the computer wouldn\'t know where one file ends and another begins.</p>',
+        'Firmware': '<p>Firmware is "permanent" software programmed into hardware devices like routers, keyboards, or cameras. It provides low-level control for that specific device. Unlike regular software, firmware is stored in non-volatile memory and is rarely updated by the average user.</p>',
+        'Registry': '<p>The Windows Registry is a massive database that stores settings for the OS and installed applications. It contains information about user profiles, what apps are installed, and how the hardware should behave. Corrupting the registry often leads to a system that won\'t boot or behaves erratically.</p>',
+        'Virtual': '<p>Virtualization allows you to run multiple "Virtual Machines" (VMs) on a single physical computer. This is done using a "Hypervisor." It is widely used in servers to save money and by developers to test software on different operating systems without needing separate computers.</p>',
+
+        // TROUBLESHOOTING
+        'BSOD': '<p>A Blue Screen of Death (BSOD) is a safety shutdown caused by a critical error. To fix this, look for the "Stop Code" at the bottom of the screen. Most BSODs are caused by bad drivers or failing RAM. Try restarting into "Safe Mode" and uninstalling any recently added software or running a "Windows Memory Diagnostic" to check for hardware errors.</p>',
+        'NoPower': '<p>If the PC has no lights and won\'t start, first check the wall plug and the switch on the back of the PSU. If those are fine, "Reseat" the 24-pin motherboard cable. If the fans spin but there is no screen, "Reseat" your RAM by taking it out and pushing it back in until it clicks; loose RAM is the #1 cause of a computer that won\'t boot.</p>',
+        'Slow': '<p>A slow PC is usually caused by too many background apps or a full hard drive. Open Task Manager (Ctrl+Shift+Esc) and click "Startup" to disable apps you don\'t need. If your C: drive is red (full), delete large files. If you are still using a mechanical HDD, upgrading to an SSD is the best way to make an old computer feel new again.</p>',
+        'Internet': '<p>If your internet isn\'t working, first try "Restarting the Router" by unplugging it for 30 seconds. On your computer, open the Command Prompt and type "ipconfig /flushdns" to clear old data. If you are on Wi-Fi, ensure your "Airplane Mode" is off and that your Network Drivers are up to date in the Device Manager.</p>',
+        'Audio': '<p>No sound usually means the OS is sending audio to the wrong device. Right-click the Speaker icon and check "Playback Devices" to ensure your speakers or headset are set to "Default." If they aren\'t showing up, your audio drivers might be missing; download the latest "Realtek" or motherboard audio drivers to fix it.</p>',
+        'Overheat': '<p>High temperatures cause the PC to shut down or lag. Use a can of compressed air to blow dust out of the fans and radiators. Ensure your computer isn\'t on a carpeted floor, as this blocks airflow. If the PC is old, the "Thermal Paste" between the CPU and cooler might be dried out and needs to be cleaned and reapplied.</p>',
+        'Artifacts': '<p>Visual glitches (lines, dots, or weird colors) usually mean the Graphics Card (GPU) is failing or overheating. First, update your GPU drivers. If that doesn\'t work, try a different HDMI/DisplayPort cable. If the glitches happen even in the BIOS, the GPU hardware is likely damaged and needs to be replaced.</p>',
+        'UpdateFail': '<p>If Windows Update gets stuck, it is usually because the update folder is corrupted. You can fix this by stopping the "Windows Update Service" in the Services menu, deleting the contents of the "C:\\Windows\\SoftwareDistribution" folder, and then restarting the service. This forces Windows to download a fresh, clean copy of the update.</p>'
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const logsRef = ref(db, 'logs');
+    let posts = JSON.parse(localStorage.getItem('it_posts_v3')) || [];
 
-    // Add Log to Firebase
-    document.getElementById('submitBtn').addEventListener('click', () => {
-        const device = document.getElementById('device').value;
-        const issue = document.getElementById('issue').value;
-        const steps = document.getElementById('steps').value;
-        const solution = document.getElementById('solution').value;
+    function showTab(tabId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-links span').forEach(s => s.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        document.getElementById('nav-' + tabId.split('-')[0]).classList.add('active');
+        document.getElementById('detailPanel').style.display = 'none';
+    }
 
-        if(!device && !issue) return alert("Please enter device or issue.");
+    function openInfo(key) {
+        const panel = document.getElementById('detailPanel');
+        document.getElementById('detailTitle').innerText = key;
+        document.getElementById('detailContent').innerHTML = itData[key] || '<p>Content for this section is being updated.</p>';
+        panel.style.display = 'block';
+        panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 
-        push(logsRef, {
-            device,
-            issue,
-            steps,
-            solution,
-            timestamp: new Date().toLocaleString()
-        });
-
-        // Clear inputs
-        document.getElementById('device').value = '';
-        document.getElementById('issue').value = '';
-        document.getElementById('steps').value = '';
-        document.getElementById('solution').value = '';
-    });
-
-    // Listen for changes from Firebase
-    onValue(logsRef, (snapshot) => {
-        const logsArea = document.getElementById('logsArea');
-        logsArea.innerHTML = '';
-        const data = snapshot.val();
-
-        if (data) {
-            Object.keys(data).reverse().forEach(key => {
-                const log = data[key];
-                const logHtml = `
-                    <div class="log-entry">
-                        <div class="log-header">
-                            <span><strong>Device:</strong> ${log.device}</span>
-                            <span>${log.timestamp}</span>
+    function renderPosts() {
+        const area = document.getElementById('forumArea');
+        area.innerHTML = '';
+        posts.forEach((post, index) => {
+            const html = `
+                <div class="forum-post">
+                    <div class="menu-container">
+                        <button class="dots-btn" onclick="toggleMenu(event, ${index})">⋮</button>
+                        <div id="menu-${index}" class="dropdown">
+                            <button onclick="updateStatus(${index}, 'solved')">✅ Mark Solved</button>
+                            <button onclick="updateStatus(${index}, 'pending')">⏳ Mark Pending</button>
+                            <button onclick="editPost(${index})">✏️ Edit</button>
+                            <button style="color:red;" onclick="deletePost(${index})">🗑️ Delete</button>
                         </div>
-                        <div class="log-section"><strong>Issue:</strong> ${log.issue}</div>
-                        <div class="log-section"><strong>Steps:</strong><br>${log.steps}</div>
-                        <div class="log-section"><strong>Resolution:</strong><br>${log.solution}</div>
                     </div>
-                `;
-                logsArea.insertAdjacentHTML('beforeend', logHtml);
-            });
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <div style="width:35px; height:35px; background:var(--primary); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">${post.dev.charAt(0).toUpperCase()}</div>
+                        <div><strong style="display:block;">${post.dev}</strong><small style="color:var(--text-muted)">${post.date}</small></div>
+                    </div>
+                    <span class="tag ${post.stat === 'solved' ? 'tag-solved' : 'tag-pending'}">${post.stat}</span>
+                    <div style="font-weight:bold; margin-top:5px;">${post.iss}</div>
+                    <p style="margin:5px 0 0 0; color:#475569;">${post.sol}</p>
+                </div>
+            `;
+            area.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    function addPost() {
+        const dev = document.getElementById('dev').value;
+        const iss = document.getElementById('iss').value;
+        const sol = document.getElementById('sol').value;
+        if(!dev || !iss) return alert("Fill in Device and Issue");
+
+        posts.unshift({ dev, iss, sol, stat: 'pending', date: new Date().toLocaleString() });
+        localStorage.setItem('it_posts_v3', JSON.stringify(posts));
+        document.getElementById('dev').value = '';
+        document.getElementById('iss').value = '';
+        document.getElementById('sol').value = '';
+        renderPosts();
+    }
+
+    function toggleMenu(e, index) {
+        e.stopPropagation();
+        const menu = document.getElementById(`menu-${index}`);
+        document.querySelectorAll('.dropdown').forEach(d => { if(d !== menu) d.style.display='none'; });
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function updateStatus(index, newStat) {
+        posts[index].stat = newStat;
+        localStorage.setItem('it_posts_v3', JSON.stringify(posts));
+        renderPosts();
+    }
+
+    function editPost(index) {
+        const res = prompt("Update resolution:", posts[index].sol);
+        if(res !== null) {
+            posts[index].sol = res;
+            localStorage.setItem('it_posts_v3', JSON.stringify(posts));
+            renderPosts();
         }
+    }
+
+    function deletePost(index) {
+        if(confirm("Delete this log?")) {
+            posts.splice(index, 1);
+            localStorage.setItem('it_posts_v3', JSON.stringify(posts));
+            renderPosts();
+        }
+    }
+
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.dropdown').forEach(d => d.style.display='none');
     });
+
+    renderPosts();
 </script>
 </body>
 </html>
