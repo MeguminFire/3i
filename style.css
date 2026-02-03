@@ -1,0 +1,32 @@
+:root {
+    --primary: #2563eb;
+    --bg: #f3f4f6;
+    --card-bg: #ffffff;
+    --text: #1f2937;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--bg);
+    padding: 20px;
+}
+
+.container { max-width: 900px; margin: 0 auto; }
+
+.editor-panel {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+/* ... Copy the rest of your styles from 3isprojectmain.html here ... */
+
+.log-entry {
+    background: var(--card-bg);
+    border-left: 5px solid var(--primary);
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+}
