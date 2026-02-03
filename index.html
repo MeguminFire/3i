@@ -3,214 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Troubleshooting Assistant</title>
+    <title>IT Troubleshooting Hub</title>
     <style>
         :root {
-            --primary: #2563eb;
-            --bg: #f3f4f6;
-            --card-bg: #ffffff;
-            --text: #1f2937;
+            --primary: #4f46e5;
+            --bg: #f3f4f7;
+            --card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
         }
+
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, sans-serif;
             background-color: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
             line-height: 1.6;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
         header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem;
             text-align: center;
-            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .editor-panel {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+        .nav-links { 
+            display: flex; 
+            justify-content: center; 
+            gap: 15px; 
+            margin-top: 10px;
+            flex-wrap: wrap;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #4b5563;
-        }
-
-        input[type="text"], textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-family: inherit;
-            box-sizing: border-box;
-        }
-
-        textarea {
-            height: 80px;
-            resize: vertical;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
+        .nav-links span {
             cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
+            font-weight: 600;
+            color: var(--text-muted);
+            padding: 5px 10px;
+            transition: 0.2s;
         }
 
-        .btn-add {
-            background-color: var(--primary);
-            color: white;
-            flex: 2;
+        .nav-links span.active { 
+            color: var(--primary); 
+            border-bottom: 2px solid var(--primary); 
         }
 
-        .btn-add:hover { background-color: #1d4ed8; }
-
-        .btn-print {
-            background-color: #4b5563;
-            color: white;
-            flex: 1;
+        .container { 
+            max-width: 800px; 
+            margin: 20px auto; 
+            padding: 0 15px;
         }
 
-        .log-entry {
-            background: var(--card-bg);
-            border-left: 5px solid var(--primary);
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* Log Creator Section */
+        .post-creator {
+            background: white;
             padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 25px;
         }
 
-        .log-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9em;
-            color: #6b7280;
+        input, textarea {
+            width: 100%;
+            padding: 12px;
             margin-bottom: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: #f9fafb;
+            font-family: inherit;
         }
 
-        .media-container img, .media-container video {
+        .btn-post {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Forum/Log Entry Styling */
+        .forum-post {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .media-content img, .media-content video, .media-content iframe {
             max-width: 100%;
             border-radius: 6px;
-            margin-top: 10px;
-            border: 1px solid #ddd;
+            margin: 10px 0;
+            display: block;
         }
 
-        @media print {
-            .editor-panel, .btn-group { display: none; }
-            body { background-color: white; }
-            .log-entry { break-inside: avoid; border: 1px solid #ddd; }
+        /* Information Grid Styling */
+        .info-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+            gap: 15px; 
+            margin-top: 15px;
+        }
+
+        .info-card { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            cursor: pointer; 
+            text-align: center; 
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .info-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+
+        .detail-panel { 
+            background: #ffffff; 
+            padding: 30px; 
+            border-radius: 10px; 
+            margin-top: 20px; 
+            display: none; 
+            border-left: 5px solid var(--primary); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .menu-container { position: absolute; top: 15px; right: 15px; }
+        .dots-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
+
+        .dropdown {
+            position: absolute; right: 0; top: 25px; background: white;
+            border: 1px solid var(--border); border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; z-index: 100; width: 140px;
+        }
+
+        .dropdown button {
+            display: block; width: 100%; padding: 10px; text-align: left;
+            background: none; border: none; cursor: pointer; font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>💻 Diagnostic & Repair Log</h1>
-        <p>Enter details below. Use URLs for images and videos to share them with others.</p>
-    </header>
+<header>
+    <h2 style="color: var(--primary); margin:0;">IT Systems Hub</h2>
+    <div class="nav-links">
+        <span id="nav-log" class="active" onclick="showTab('log-tab')">Logs</span>
+        <span id="nav-hw" onclick="showTab('hw-tab')">Hardware</span>
+        <span id="nav-sw" onclick="showTab('sw-tab')">Software</span>
+        <span id="nav-fix" onclick="showTab('fix-tab')">Troubleshooting</span>
+    </div>
+</header>
 
-    <div class="editor-panel">
-        <div class="form-group">
-            <label for="device">Device Name</label>
-            <input type="text" id="device" placeholder="e.g., Gaming PC">
+<div class="container">
+    
+    <div id="log-tab" class="page active">
+        <div class="post-creator">
+            <input type="text" id="dev" placeholder="Device Name...">
+            <input type="text" id="iss" placeholder="Issue/Problem...">
+            <input type="text" id="imgUrl" placeholder="Image URL (Direct link ending in .jpg/.png)">
+            <input type="text" id="vidUrl" placeholder="Video URL (YouTube or .mp4)">
+            <textarea id="sol" rows="3" placeholder="Troubleshooting steps/Resolution..."></textarea>
+            <button class="btn-post" onclick="addPost()">Post Log</button>
         </div>
-        <div class="form-group">
-            <label for="issue">Symptom</label>
-            <input type="text" id="issue" placeholder="e.g., Overheating">
-        </div>
-        <div class="form-group">
-            <label for="imageLink">Image URL (Optional)</label>
-            <input type="text" id="imageLink" placeholder="Paste link to .jpg or .png">
-        </div>
-        <div class="form-group">
-            <label for="videoLink">Video URL (Optional)</label>
-            <input type="text" id="videoLink" placeholder="Paste link to .mp4 or YouTube">
-        </div>
-        <div class="form-group">
-            <label for="steps">Steps Taken</label>
-            <textarea id="steps"></textarea>
-        </div>
-        <div class="btn-group">
-            <button class="btn-add" onclick="addLog()">Add to Log</button>
-            <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
+        <div id="forumArea"></div>
+    </div>
+
+    <div id="hw-tab" class="page">
+        <h3>Hardware Knowledge Base</h3>
+        <div class="info-grid">
+            <div class="info-card" onclick="openInfo('Motherboard')">📟 Motherboard</div>
+            <div class="info-card" onclick="openInfo('CPU')">⚡ CPU</div>
+            <div class="info-card" onclick="openInfo('RAM')">🧠 RAM</div>
+            <div class="info-card" onclick="openInfo('GPU')">🎮 GPU</div>
+            <div class="info-card" onclick="openInfo('Storage')">💾 Storage</div>
+            <div class="info-card" onclick="openInfo('PSU')">🔌 Power Supply</div>
         </div>
     </div>
 
-    <div class="log-container">
-        <h2>Session History</h2>
-        <div id="logsArea"></div>
+    <div id="sw-tab" class="page">
+        <h3>Software Systems</h3>
+        <div class="info-grid">
+            <div class="info-card" onclick="openInfo('OS')">🖥️ Operating System</div>
+            <div class="info-card" onclick="openInfo('Kernel')">🧬 Kernel</div>
+            <div class="info-card" onclick="openInfo('BIOS')">📟 BIOS / UEFI</div>
+            <div class="info-card" onclick="openInfo('Drivers')">⚙️ Device Drivers</div>
+        </div>
+    </div>
+
+    <div id="fix-tab" class="page">
+        <h3>Troubleshooting & Solutions</h3>
+        <div class="info-grid">
+            <div class="info-card" onclick="openInfo('BSOD')">🟦 Blue Screen</div>
+            <div class="info-card" onclick="openInfo('NoPower')">🔌 No Power</div>
+            <div class="info-card" onclick="openInfo('Internet')">🌐 No Internet</div>
+            <div class="info-card" onclick="openInfo('Overheat')">🔥 High Temps</div>
+        </div>
+    </div>
+
+    <div id="detailPanel" class="detail-panel">
+        <h2 id="detailTitle"></h2>
+        <div id="detailContent"></div>
     </div>
 </div>
 
 <script>
-    function addLog() {
-        const device = document.getElementById('device').value;
-        const issue = document.getElementById('issue').value;
-        const imgUrl = document.getElementById('imageLink').value;
-        const vidUrl = document.getElementById('videoLink').value;
-        const steps = document.getElementById('steps').value;
-        const timestamp = new Date().toLocaleString();
+    const itData = {
+        'Motherboard': '<p>The central PCB that allows communication between CPU, RAM, and other hardware components.</p>',
+        'CPU': '<p>The brain of the computer that performs calculations and executes instructions.</p>',
+        'RAM': '<p>Volatile memory used to store data that is actively being used for quick access.</p>',
+        'GPU': '<p>Dedicated hardware for rendering graphics and processing parallel data tasks.</p>',
+        'Storage': '<p>Non-volatile devices like SSDs and HDDs that keep data even when powered off.</p>',
+        'PSU': '<p>Converts wall AC power into regulated DC power for internal components.</p>',
+        'OS': '<p>Software that manages hardware resources and provides the user interface.</p>',
+        'Kernel': '<p>The core part of the OS that acts as a bridge between applications and hardware.</p>',
+        'BIOS': '<p>Firmware used to perform hardware initialization during the booting process.</p>',
+        'Drivers': '<p>Specialized software allowing the OS to communicate with specific hardware devices.</p>',
+        'BSOD': '<p>A critical error screen indicating a system crash, often caused by drivers or failing RAM.</p>',
+        'NoPower': '<p>Check PSU switches, cable connections, and perform a CMOS reset if the system is dead.</p>',
+        'Internet': '<p>Troubleshoot by flushing DNS, resetting the router, or checking NIC drivers.</p>',
+        'Overheat': '<p>Usually caused by dust buildup or dried thermal paste. Clean fans and reapply paste.</p>'
+    };
 
-        if(!device && !issue) return alert("Please enter a device or issue.");
-
-        let mediaHtml = '';
-        if(imgUrl) {
-            mediaHtml += `<img src="${imgUrl}" alt="Log Image">`;
-        }
-        if(vidUrl) {
-            // Check if it's a YouTube link
-            if(vidUrl.includes('youtube.com') || vidUrl.includes('youtu.be')) {
-                const vidId = vidUrl.split('v=')[1] || vidUrl.split('/').pop();
-                mediaHtml += `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${vidId}" frameborder="0" allowfullscreen></iframe>`;
-            } else {
-                mediaHtml += `<video controls><source src="${vidUrl}" type="video/mp4">Your browser does not support the video tag.</video>`;
-            }
-        }
-
-        const logHtml = `
-            <div class="log-entry">
-                <div class="log-header">
-                    <span><strong>Device:</strong> ${device}</span>
-                    <span>${timestamp}</span>
-                </div>
-                <div><strong>Issue:</strong> ${issue}</div>
-                <div class="media-container">${mediaHtml}</div>
-                <div style="margin-top:10px;"><strong>Steps:</strong><br><span style="white-space: pre-wrap;">${steps}</span></div>
-            </div>
-        `;
-
-        document.getElementById('logsArea').insertAdjacentHTML('afterbegin', logHtml);
-        
-        // Clear inputs
-        document.getElementById('device').value = '';
-        document.getElementById('issue').value = '';
-        document.getElementById('imageLink').value = '';
-        document.getElementById('videoLink').value = '';
-        document.getElementById('steps').value = '';
-    }
-</script>
-</body>
-</html>
+    function showTab(tabId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
