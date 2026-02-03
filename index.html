@@ -102,7 +102,6 @@
             margin-top: 10px;
         }
 
-        /* Forum Post with Menu */
         .forum-post {
             background: white;
             border: 1px solid var(--border);
@@ -125,7 +124,6 @@
             display: block; width: 100%; padding: 10px; text-align: left;
             background: none; border: none; cursor: pointer; font-size: 0.9rem;
         }
-        .dropdown button:hover { background: #f3f4f6; }
 
         .media-content img, .media-content video {
             max-width: 100%;
@@ -135,7 +133,6 @@
             border: 1px solid var(--border);
         }
 
-        /* Info Grid Styling */
         .info-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
@@ -146,4 +143,224 @@
         .info-card { 
             background: white; 
             padding: 20px; 
-            border-radius: 8px;
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            cursor: pointer; 
+            text-align: center; 
+            font-weight: 600;
+        }
+
+        .detail-panel { 
+            background: #ffffff; 
+            padding: 25px; 
+            border-radius: 10px; 
+            margin-top: 20px; 
+            display: none; 
+            border-left: 5px solid var(--primary); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2 style="color: var(--primary); margin:0;">IT Systems Hub</h2>
+    <div class="nav-links">
+        <span id="nav-log" class="active" onclick="showTab('log-tab')">Logs</span>
+        <span id="nav-hw" onclick="showTab('hw-tab')">Hardware</span>
+        <span id="nav-sw" onclick="showTab('sw-tab')">Software</span>
+        <span id="nav-fix" onclick="showTab('fix-tab')">Troubleshooting</span>
+    </div>
+</header>
+
+<div class="container">
+    
+    <div id="log-tab" class="page active">
+        <div class="post-creator">
+            <input type="text" id="dev" placeholder="Device Name...">
+            <input type="text" id="iss" placeholder="Issue/Problem...">
+            <label>📷 Upload Image</label>
+            <input type="file" id="fileImg" accept="image/*">
+            <label>🎥 Upload Video</label>
+            <input type="file" id="fileVid" accept="video/*">
+            <textarea id="sol" rows="3" placeholder="Troubleshooting steps..."></textarea>
+            <button class="btn-post" onclick="handleAddPost()">Post to Log</button>
+        </div>
+        <div id="forumArea"></div>
+    </div>
+
+    <div id="hw-tab" class="page">
+        <h3>Hardware Knowledge Base</h3>
+        <div class="info-grid">
+            <div class="info-card" onclick="openInfo('Motherboard')">📟 Motherboard</div>
+            <div class="info-card" onclick="openInfo('CPU')">⚡ CPU</div>
+            <div class="info-card" onclick="openInfo('RAM')">🧠 RAM</div>
+            <div class="info-card" onclick="openInfo('Storage')">💾 Storage</div>
+        </div>
+    </div>
+
+    <div id="sw-tab" class="page">
+        <h3>Software Systems</h3>
+        <div class="info-grid">
+            <div class="info-card" onclick="openInfo('OS')">🖥️ Operating System</div>
+            <div class="info-card" onclick="openInfo('BIOS')">📟 BIOS / UEFI</div>
+            <div class="info-card" onclick="openInfo('Drivers')">⚙️ Device Drivers</div>
+        </div>
+    </div>
+
+    <div id="fix-tab" class="page">
+        <h3>Common Solutions</h3>
+        <div class="info-grid">
+            <div class="info-card" onclick="openInfo('BSOD')">🟦 Blue Screen</div>
+            <div class="info-card" onclick="openInfo('NoPower')">🔌 No Power</div>
+            <div class="info-card" onclick="openInfo('Overheat')">🔥 Overheating</div>
+        </div>
+    </div>
+
+    <div id="detailPanel" class="detail-panel">
+        <h2 id="detailTitle"></h2>
+        <div id="detailContent"></div>
+    </div>
+</div>
+
+<script>
+    const itData = {
+        'Motherboard': 'The Motherboard is the central printed circuit board that connects all computer components. It houses the CPU socket, RAM slots, and provides the electrical paths (buses) for data to travel between devices.',
+        'CPU': 'The Central Processing Unit (CPU) is the brain of the computer. It executes instructions, performs mathematical calculations, and manages data flow between software and hardware.',
+        'RAM': 'Random Access Memory (RAM) is high-speed temporary storage. It holds data that the CPU needs immediately. It is volatile, meaning data is lost when the power is turned off.',
+        'Storage': 'Storage devices (SSDs and HDDs) keep your data permanently. SSDs are much faster because they use flash memory, while HDDs use spinning magnetic platters.',
+        'OS': 'The Operating System (OS) is software that manages hardware and software resources. It handles memory, files, and provides the user interface you interact with.',
+        'BIOS': 'The BIOS/UEFI is the firmware that runs when you turn on the computer. It initializes hardware components and hands off control to the Operating System.',
+        'Drivers': 'Device Drivers are specialized software that allow the Operating System to communicate with hardware like printers, graphics cards, and network adapters.',
+        'BSOD': 'A Blue Screen of Death indicates a critical system error. It is usually caused by failing hardware (like RAM) or corrupt drivers. Check the stop code for specific clues.',
+        'NoPower': 'If a PC won’t turn on, check the power cable and the switch on the back of the PSU. If fans spin but there is no display, try "reseating" the RAM sticks.',
+        'Overheat': 'Overheating is often caused by dust in the fans or old thermal paste. Use compressed air to clean out the case and ensure there is proper airflow.'
+    };
+
+    let localPosts = [];
+
+    function showTab(tabId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-links span').forEach(s => s.classList.remove('active'));
+        
+        const page = document.getElementById(tabId);
+        if(page) page.classList.add('active');
+        
+        const navId = 'nav-' + tabId.split('-')[0];
+        const nav = document.getElementById(navId);
+        if(nav) nav.classList.add('active');
+        
+        document.getElementById('detailPanel').style.display = 'none';
+    }
+
+    function openInfo(key) {
+        const panel = document.getElementById('detailPanel');
+        const title = document.getElementById('detailTitle');
+        const content = document.getElementById('detailContent');
+        
+        title.innerText = key;
+        content.innerText = itData[key] || "Information coming soon.";
+        panel.style.display = 'block';
+        panel.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
+    async function handleAddPost() {
+        const dev = document.getElementById('dev').value;
+        const iss = document.getElementById('iss').value;
+        const sol = document.getElementById('sol').value;
+        const imgInput = document.getElementById('fileImg');
+        const vidInput = document.getElementById('fileVid');
+
+        if(!dev || !iss) return alert("Please fill in at least the device and the issue.");
+
+        let imgData = "";
+        let vidData = "";
+
+        if (imgInput.files && imgInput.files[0]) {
+            imgData = await toBase64(imgInput.files[0]);
+        }
+        if (vidInput.files && vidInput.files[0]) {
+            vidData = await toBase64(vidInput.files[0]);
+        }
+
+        const newPost = {
+            id: Date.now(),
+            dev, iss, sol, imgData, vidData,
+            date: new Date().toLocaleString()
+        };
+
+        localPosts.unshift(newPost);
+        renderPosts();
+
+        // Reset
+        document.getElementById('dev').value = '';
+        document.getElementById('iss').value = '';
+        document.getElementById('sol').value = '';
+        imgInput.value = '';
+        vidInput.value = '';
+    }
+
+    function renderPosts() {
+        const area = document.getElementById('forumArea');
+        area.innerHTML = '';
+        
+        localPosts.forEach((post, index) => {
+            const html = `
+                <div class="forum-post">
+                    <div class="menu-container">
+                        <button class="dots-btn" onclick="toggleMenu(event, ${index})">⋮</button>
+                        <div id="menu-${index}" class="dropdown">
+                            <button onclick="editPost(${index})">✏️ Edit Text</button>
+                            <button style="color:red;" onclick="deletePost(${index})">🗑️ Delete</button>
+                        </div>
+                    </div>
+                    <strong>${post.dev}</strong> - <small>${post.date}</small>
+                    <p><strong>Issue:</strong> ${post.iss}</p>
+                    <div class="media-content">
+                        ${post.imgData ? `<img src="${post.imgData}">` : ''}
+                        ${post.vidData ? `<video controls src="${post.vidData}"></video>` : ''}
+                    </div>
+                    <p style="white-space: pre-wrap;">${post.sol}</p>
+                </div>
+            `;
+            area.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    function toggleMenu(e, index) {
+        e.stopPropagation();
+        const menu = document.getElementById(`menu-${index}`);
+        document.querySelectorAll('.dropdown').forEach(d => {
+            if(d !== menu) d.style.display = 'none';
+        });
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function deletePost(index) {
+        if(confirm("Delete this log?")) {
+            localPosts.splice(index, 1);
+            renderPosts();
+        }
+    }
+
+    function editPost(index) {
+        const newSol = prompt("Edit Troubleshooting Steps:", localPosts[index].sol);
+        if(newSol !== null) {
+            localPosts[index].sol = newSol;
+            renderPosts();
+        }
+    }
+
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.dropdown').forEach(d => d.style.display = 'none');
+    });
+</script>
+</body>
+</html>
