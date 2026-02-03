@@ -4,7 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IT Troubleshooting Assistant</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Restored Input Section Styling */
+        .editor-panel {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #4b5563;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .btn-add {
+            background-color: var(--primary);
+            color: white;
+            flex: 2;
+        }
+
+        .btn-add:hover { background-color: #1d4ed8; }
+
+        .btn-print {
+            background-color: #4b5563;
+            color: white;
+            flex: 1;
+        }
+
+        /* Log Output Styling */
+        .log-container h2 {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+
+        .log-entry {
+            background: var(--card-bg);
+            border-left: 5px solid var(--primary);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .log-section {
+            margin-bottom: 8px;
+        }
+
+        .log-section strong {
+            color: var(--primary);
+        }
+
+        @media print {
+            .editor-panel, .btn-group { display: none; }
+            body { background-color: white; }
+            .log-entry { break-inside: avoid; border: 1px solid #ddd; }
+        }
+    </style>
 </head>
 <body>
 
@@ -25,11 +151,11 @@
         </div>
         <div class="form-group">
             <label for="steps">Troubleshooting Steps Taken</label>
-            <textarea id="steps"></textarea>
+            <textarea id="steps" placeholder="1. Checked drivers..."></textarea>
         </div>
         <div class="form-group">
             <label for="solution">Resolution / Final Notes</label>
-            <textarea id="solution"></textarea>
+            <textarea id="solution" placeholder="Replaced RAM stick."></textarea>
         </div>
         <div class="btn-group">
             <button class="btn-add" id="submitBtn">Add to Live Log</button>
@@ -43,6 +169,73 @@
     </div>
 </div>
 
-<script type="module" src="script.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+
+    // PASTE YOUR CONFIG FROM FIREBASE HERE
+    const firebaseConfig = {
+      apiKey: "PASTE_HERE",
+      authDomain: "it-troubl.firebaseapp.com",
+      databaseURL: "https://it-troubl-default-rtdb.firebaseio.com",
+      projectId: "it-troubl",
+      storageBucket: "it-troubl.appspot.com",
+      messagingSenderId: "PASTE_HERE",
+      appId: "PASTE_HERE"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const logsRef = ref(db, 'logs');
+
+    // Add Log to Firebase
+    document.getElementById('submitBtn').addEventListener('click', () => {
+        const device = document.getElementById('device').value;
+        const issue = document.getElementById('issue').value;
+        const steps = document.getElementById('steps').value;
+        const solution = document.getElementById('solution').value;
+
+        if(!device && !issue) return alert("Please enter device or issue.");
+
+        push(logsRef, {
+            device,
+            issue,
+            steps,
+            solution,
+            timestamp: new Date().toLocaleString()
+        });
+
+        // Clear inputs
+        document.getElementById('device').value = '';
+        document.getElementById('issue').value = '';
+        document.getElementById('steps').value = '';
+        document.getElementById('solution').value = '';
+    });
+
+    // Listen for changes from Firebase
+    onValue(logsRef, (snapshot) => {
+        const logsArea = document.getElementById('logsArea');
+        logsArea.innerHTML = '';
+        const data = snapshot.val();
+
+        if (data) {
+            Object.keys(data).reverse().forEach(key => {
+                const log = data[key];
+                const logHtml = `
+                    <div class="log-entry">
+                        <div class="log-header">
+                            <span><strong>Device:</strong> ${log.device}</span>
+                            <span>${log.timestamp}</span>
+                        </div>
+                        <div class="log-section"><strong>Issue:</strong> ${log.issue}</div>
+                        <div class="log-section"><strong>Steps:</strong><br>${log.steps}</div>
+                        <div class="log-section"><strong>Resolution:</strong><br>${log.solution}</div>
+                    </div>
+                `;
+                logsArea.insertAdjacentHTML('beforeend', logHtml);
+            });
+        }
+    });
+</script>
 </body>
 </html>
